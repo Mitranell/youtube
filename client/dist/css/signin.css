@@ -1,0 +1,67 @@
+/* line 4, ../../src/scss/signin.scss */
+#view .box {
+  position: relative;
+  width: 400px;
+  margin: 0 auto;
+}
+/* line 8, ../../src/scss/signin.scss */
+#view .box .tabs {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+}
+/* line 13, ../../src/scss/signin.scss */
+#view .box .tabs .tab {
+  float: left;
+  width: 50%;
+  height: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+/* line 19, ../../src/scss/signin.scss */
+#view .box .tabs .tab.active {
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  background-color: #272b3f;
+  cursor: default;
+}
+/* line 24, ../../src/scss/signin.scss */
+#view .box .tabs .tab:first-child {
+  box-shadow: inset 1px 1px 0 #272b3f;
+  -moz-box-shadow: inset 1px 1px 0 #272b3f;
+  -webkit-box-shadow: inset 1px 1px 0 #272b3f;
+}
+/* line 27, ../../src/scss/signin.scss */
+#view .box .tabs .tab:last-child {
+  box-shadow: inset -1px 1px 0 #272b3f;
+  -moz-box-shadow: inset -1px 1px 0 #272b3f;
+  -webkit-box-shadow: inset -1px 1px 0 #272b3f;
+}
+/* line 32, ../../src/scss/signin.scss */
+#view .box form {
+  display: none;
+}
+/* line 34, ../../src/scss/signin.scss */
+#view .box form.active {
+  display: block;
+}
+/* line 37, ../../src/scss/signin.scss */
+#view .box form .input {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 2px;
+  background-color: #272b3f;
+}
+/* line 42, ../../src/scss/signin.scss */
+#view .box form .input:last-child {
+  margin-bottom: 0;
+  background-color: #bf5555;
+  cursor: pointer;
+}
+/* line 47, ../../src/scss/signin.scss */
+#view .box form .input input {
+  width: 100%;
+  height: 100%;
+}

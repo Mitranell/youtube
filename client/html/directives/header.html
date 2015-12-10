@@ -1,0 +1,25 @@
+<header ng-controller="HeaderController" ng-class="{mobileOpen:mobileMenuActive===true}" >
+    <div class="widthController">
+        <ul>
+            <li ng-click="menuClick(0)" ng-class="{active:cur===0}">
+                <div id="logo">
+                    <span class="a">Budget</span>
+                    <span class="b">ondersteuning</span>
+                    <span class="a">tilburg</span>
+                </div>
+            </li>
+            <div id="menuItems">
+                <li ng-click="menuClick(1)" ng-class="{active:cur===1}">Info</li>
+                <li ng-click="menuClick(2)" ng-class="{active:cur===2}">Diensten</li>
+                <li ng-click="menuClick(3)" ng-class="{active:cur===3}">Contact</li>
+            </div>
+        </ul>
+            <div class="burger" ng-class="{active:mobileMenuActive===true}" ng-click="clickBurger()">
+                <div class="animWrapper">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+            </div>
+    </div>
+</header>

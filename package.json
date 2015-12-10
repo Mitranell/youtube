@@ -1,0 +1,29 @@
+{
+  "name": "NewYearsEveMix",
+  "version": "0.0.1",
+  "description": "Server & Client for ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Koen van Emden",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.12.3",
+    "moment": "^2.10.3",
+    "body-parser": "latest",
+    "ytdl-core": "latest",
+    "fluent-ffmpeg": "latest",
+    "google-spreadsheet": "latest"
+  },
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-jshint": "latest",
+    "jshint-stylish": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-compass": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-nodemon": "latest",
+    "grunt-concurrent": "latest"
+  }
+}

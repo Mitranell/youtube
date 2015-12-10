@@ -1,0 +1,179 @@
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
+}
+@mixin scale($scaleX, $scaleY) {
+    -ms-transform: scale($scaleX,$scaleY);
+    -webkit-transform: scale($scaleX,$scaleY);
+    transform: scale($scaleX,$scaleY);
+}
+@mixin respond-to($media) {
+    @if $media == mobile-screens {
+        @media only screen and (max-width: $size-mobile) {
+            @content;
+        }
+    }
+    @else if $media == medium-screens {
+        @media only screen and (min-width: $size-mobile + 1) and (max-width: $size-max - 1) {
+            @content;
+        }
+    }
+    @else if $media == wide-screens {
+        @media only screen and (min-width: $size-max) {
+            @content;
+        }
+    }
+    @else if $media == below-wide-screens {
+        @media only screen and (max-width: $size-max) {
+            @content;
+        }
+    }
+}
+@mixin topDownGradient($c1, $c2) {
+    background: $c2;
+    background: -moz-linear-gradient(top, $c1 0%, $c2 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$c1), color-stop(100%,$c2));
+    background: -webkit-linear-gradient(top, $c1 0%, $c2 100%);
+    background: -o-linear-gradient(top, $c1 0%, $c2 100%);
+    background: -ms-linear-gradient(top, $c1 0%, $c2 100%);
+    background: linear-gradient(to bottom, $c1 0%, $c2 100%);
+}
+@mixin leftRightGradient($c1, $c2) {
+    background: $c2;
+    background: -moz-linear-gradient(lefy, $c1 0%, $c2 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,$c1), color-stop(100%,$c2));
+    background: -webkit-linear-gradient(left, $c1 0%, $c2 100%);
+    background: -o-linear-gradient(left, $c1 0%, $c2 100%);
+    background: -ms-linear-gradient(left, $c1 0%, $c2 100%);
+    background: linear-gradient(to right, $c1 0%, $c2 100%);
+}
+@mixin fixedFix() {
+    -webkit-backface-visibility: hidden; //Position fixed flicker fix
+    backface-visibility: hidden;
+}
+@mixin flip() {
+    -moz-transform: scaleX(-1);
+    /* Gecko */
+    -o-transform: scaleX(-1);
+    /* Operah */
+    -webkit-transform: scaleX(-1);
+    /* webkit */
+    transform: scaleX(-1);
+    /* standard */
+    filter:FlipH;
+}
+@mixin placeholder-color($color) {
+
+    //Firefox puts a different opacity on placeholders
+    &:-moz-placeholder {
+        color: $color;
+        opacity: 1;
+    }
+    &::-moz-placeholder {
+        color: $color;
+        opacity: 1;
+    }
+    &::-webkit-input-placeholder {
+        color: $color;
+    }
+    &:-ms-input-placeholder {
+        color: $color;
+    }
+}
+@mixin rotate( $degrees ) {
+    -webkit-transform: rotate(#{$degrees}deg);
+    -moz-transform: rotate(#{$degrees}deg);
+    -ms-transform: rotate(#{$degrees}deg);
+    -o-transform: rotate(#{$degrees}deg);
+    transform: rotate(#{$degrees}deg);
+    filter:progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=#{cos($degrees)}, M12=-#{sin($degrees)}, M21=#{sin($degrees)}, M22=#{cos($degrees)});
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=#{cos($degrees)}, M12=-#{sin($degrees)}, M21=#{sin($degrees)}, M22=#{cos($degrees)})";
+    zoom: 1;
+}
+@mixin box-shadow($params) {
+    box-shadow: $params;
+    -moz-box-shadow: $params;
+    -webkit-box-shadow: $params;
+}
+@mixin blur($blur) {
+    -webkit-filter: blur($blur);
+}
+@mixin transition($property, $time, $method) {
+    -webkit-transition: $property $time $method;
+    -moz-transition: $property $time $method;
+    -ms-transition: $property $time $method;
+    -o-transition: $property $time $method;
+    transition: $property $time $method;
+}
+@mixin transformOrigin($origin) {
+    -webkit-transform-origin: $origin;
+    -moz-transform-origin: $origin;
+    -o-transform-origin: $origin;
+    -ms-transform-origin: $origin;
+    transform-origin: $origin;
+}
+@mixin disableTransition() {
+    -o-transition-property: none !important;
+    -moz-transition-property: none !important;
+    -ms-transition-property: none !important;
+    -webkit-transition-property: none !important;
+    transition-property: none !important;
+}
+@mixin box-sizing() {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+@mixin clear-floats() {
+    &:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+}
+@mixin flip() {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter:FlipH;
+    -ms-filter: "FlipH";
+}
+@mixin no-select() {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+@mixin columns($count, $gap) {
+    -webkit-column-count: $count;
+    -moz-column-count: $count;
+    column-count: $count;
+    -webkit-column-gap: $gap;
+    -moz-column-gap: $gap;
+    column-gap: $gap;
+
+    // -webkit-column-fill:  auto;
+    // -moz-column-fill:     auto;
+    // column-fill:          auto;
+}
+@mixin columnTransitionFix() {
+    -webkit-column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+    -o-column-break-inside: avoid;
+    -ms-column-break-inside: avoid;
+    column-break-inside: avoid;
+    -webkit-backface-visibility: hidden;
+}
+@mixin grayScale($percentage) {
+    -webkit-filter: grayscale($percentage);
+    -moz-filter: grayscale($percentage);
+    -ms-filter: grayscale($percentage);
+    -o-filter: grayscale($percentage);
+    filter:grayscale($percentage);
+}
