@@ -10,18 +10,18 @@ var express = require('express'),
 //Declare client folder as static so that every request gets through
 app.use('/client', express.static(__dirname + '/client'));
 app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({
+app.use(bodyParser.urlencoded({ // comment ook hier
     extended: true
 }));
 
 //Default Server route
 app.get('/', function(req, res) {
     res.sendFile('index.html', {
-        root: __dirname + '/client'
+        root: __dirname + '/client' //comment hier
     });
 });
 
-//comment koen
+//comment koen 123
 
 var api = new Api(express, app);
 
