@@ -1,3 +1,5 @@
+//comment 3
+
 var modules = './node_custom/';
 
 //Node modules
@@ -21,11 +23,11 @@ app.get('/', function(req, res) {
     });
 });
 
-//comment koen
-
 var api = new Api(express, app);
 
 //Start the node server on specified port
 http.listen(1337, function() {
     console.log('Server set up on 127.0.0.1:1337');
 });
+
+//comment
