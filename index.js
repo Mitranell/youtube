@@ -21,8 +21,6 @@ app.get('/', function(req, res) {
     });
 });
 
-//comment koen
-
 var api = new Api(express, app);
 
 //Start the node server on specified port
