@@ -10,19 +10,27 @@ var wrapper = function(express, app) {
             i.array = 0;
             i.tracks = 1;
 
+            var rows = data.length;
+
             function execute() {
                 var url = data[i.array]['track' + i.tracks.toString() + 'youtubeurl'];
                 var name = data[i.array].jouwnaam;
                 var genre = data[i.array]['track' + i.tracks.toString() + 'genre'];
 
+                console.log('url: '+url);
+                console.log('name: '+name);
+                console.log('genre: '+genre);
+
                 media.convert(url, name, genre, function() {
                     if(i.tracks < 3){
                         i.tracks ++;
                         execute();
-                    } else if(i.array < data.length){
+                    } else if(i.array < rows-1){
                         i.array ++;
-                        i.tracks = 0;
+                        i.tracks = 1;
                         execute();
+                    } else if(i.array == rows-1){
+                        res.send('Done converting '+rows+' rows of songs, for a total of '+rows*3+' tracks :)')
                     }
                 });
             } execute();
