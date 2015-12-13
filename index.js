@@ -7,12 +7,14 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     Api = require(modules + 'api.js');
 
+
 //Declare client folder as static so that every request gets through
 app.use('/client', express.static(__dirname + '/client'));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 
 //Default Server route
 app.get('/', function(req, res) {
@@ -21,7 +23,9 @@ app.get('/', function(req, res) {
     });
 });
 
+
 var api = new Api(express, app);
+
 
 //Start the node server on specified port
 http.listen(1337, function() {

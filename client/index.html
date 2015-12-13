@@ -10,10 +10,41 @@
 
 <body>
 
-    <main>Client page</main>
+    <main>
+        <canvas id="canvas"></canvas>
+        <section id="theater">
+            <div id="skull" class="item skull">
+                <svg style="enable-background:new 0 0 500 500;" version="1.1" viewBox="0 0 500 500" x="0px" xml:space="preserve" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" y="0px">
+                    <g>
+                        <path class="st0"
+                            d="M386.7,61.8c-48.8-58.2-182.3-103.6-274.7,0C19.5,165.4,92.3,269.2,92.3,269.2
+                		c-10.3,3.7-30,39.1-17.1,55.3c12.8,16.3,38.5,18.8,38.5,18.8s7.1,69,16.3,88.1C141,454.9,197.5,500,250.6,500
+                		c53.1,0,98.4-36.8,117.3-65c18.8-28.2,19.7-96.7,19.7-96.7c77-5.1,22.2-69.3,22.2-69.3C454.3,190.2,435.5,120,386.7,61.8z"
+                            id="XMLID_182_"/>
+                    </g>
+                </svg>
+            </div>
+            <div id="detailing" class="item detailing">
+                <object type="image/svg+xml" data="client/vector/skullDetailing.svg" class="logo"></object>
+            </div>
+            <div id="teeth" class="item teeth">
+                <object type="image/svg+xml" data="client/vector/teeth.svg" class="logo"></object>
+            </div>
+
+            <div class="eye left">
+                <div class="circles"></div>
+                <div class="dashedRing"></div>
+            </div>
+            <div class="eye right">
+                <div class="circles"></div>
+                <div class="dashedRing"></div>
+            </div>
+        </section>
+    </main>
 
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dancer.js/0.4.0/dancer.min.js"></script>
 
     <script src="client/src/js/client.js"></script>
 
