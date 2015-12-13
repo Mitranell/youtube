@@ -2,8 +2,9 @@
 @import 'settings';
 @import 'setup';
 body {
-    background-color: $color-whiteblue;
+    //background-color: $color-bg;
     overflow-y: scroll;
+    color: $color-white;
 }
 body,
 input,
@@ -11,4 +12,11 @@ textarea {
     font-family: $font-stack;
     font-size: $font-size;
     font-weight: 700;
+}
+main{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    @import 'canvas';
+    @import 'theater';
 }
