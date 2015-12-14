@@ -2,7 +2,9 @@
 @import 'settings';
 @import 'setup';
 body {
-    //background-color: $color-bg;
+    background-color: $color-dark-black;
+    background-image: url("../../img/shirt.png");
+    background-position: center;
     overflow-y: scroll;
     color: $color-white;
 }
@@ -18,5 +20,5 @@ main{
     width: 100%;
     height: 100%;
     @import 'canvas';
-    @import 'theater';
+    @import 'overlay';
 }

@@ -6,6 +6,7 @@
     left: 50%;
     margin-top: -250px;
     margin-left: -250px;
+    z-index: 99;
     .item {
         position: absolute;
         width: 100%;
@@ -15,8 +16,8 @@
                 path {
                     fill: $color-white;
                 }
-                -webkit-filter: drop-shadow( 0px 0px 10px rgba(#1e2230,1) );
-                filter:drop-shadow( 0px 0px 10px rgba(#1e2230,1) );
+                -webkit-filter: drop-shadow( 0px 0px 10px #000 );
+                filter:drop-shadow( 0px 0px 10px #000 );
             }
         }
         &.detailing {

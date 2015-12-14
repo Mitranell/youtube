@@ -46,11 +46,14 @@ textarea {
 
 /* line 4, ../../src/scss/main.scss */
 body {
+  background-color: #000;
+  background-image: url("../../img/shirt.png");
+  background-position: center;
   overflow-y: scroll;
   color: #fff;
 }
 
-/* line 9, ../../src/scss/main.scss */
+/* line 11, ../../src/scss/main.scss */
 body,
 input,
 textarea {
@@ -59,18 +62,27 @@ textarea {
   font-weight: 700;
 }
 
-/* line 16, ../../src/scss/main.scss */
+/* line 18, ../../src/scss/main.scss */
 main {
   position: relative;
   width: 100%;
   height: 100%;
 }
 /* line 1, ../../src/scss/_canvas.scss */
-main #canvas {
+main #canvasWrapper {
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+  border-radius: 25px;
   position: absolute;
+  left: 25px;
+  right: 25px;
+  top: 25px;
+  bottom: 25px;
 }
 /* line 1, ../../src/scss/_theater.scss */
-main #theater {
+main #canvasWrapper #theater {
   position: absolute;
   width: 500px;
   height: 500px;
@@ -78,20 +90,21 @@ main #theater {
   left: 50%;
   margin-top: -250px;
   margin-left: -250px;
+  z-index: 99;
 }
-/* line 9, ../../src/scss/_theater.scss */
-main #theater .item {
+/* line 10, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .item {
   position: absolute;
   width: 100%;
   height: 100%;
 }
-/* line 14, ../../src/scss/_theater.scss */
-main #theater .item.skull svg {
-  -webkit-filter: drop-shadow(0px 0px 10px #1e2230);
-  filter: drop-shadow(0px 0px 10px #1e2230);
-}
 /* line 15, ../../src/scss/_theater.scss */
-main #theater .item.skull svg path {
+main #canvasWrapper #theater .item.skull svg {
+  -webkit-filter: drop-shadow(0px 0px 10px #000);
+  filter: drop-shadow(0px 0px 10px #000);
+}
+/* line 16, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .item.skull svg path {
   fill: #fff;
 }
 @-webkit-keyframes rotateClockWise {
@@ -174,8 +187,8 @@ main #theater .item.skull svg path {
     -webkit-transform: rotate(-360deg);
   }
 }
-/* line 45, ../../src/scss/_theater.scss */
-main #theater .eye {
+/* line 46, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye {
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
   -ms-border-radius: 100%;
@@ -187,37 +200,37 @@ main #theater .eye {
   top: 168px;
   left: 50%;
 }
-/* line 52, ../../src/scss/_theater.scss */
-main #theater .eye.left {
+/* line 53, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye.left {
   margin-left: -136px;
 }
-/* line 54, ../../src/scss/_theater.scss */
-main #theater .eye.left .dashedRing {
+/* line 55, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye.left .dashedRing {
   -webkit-animation-name: rotateClockWise;
   -webkit-animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
-/* line 61, ../../src/scss/_theater.scss */
-main #theater .eye.right {
+/* line 62, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye.right {
   margin-left: 12px;
 }
-/* line 63, ../../src/scss/_theater.scss */
-main #theater .eye.right .dashedRing {
+/* line 64, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye.right .dashedRing {
   -webkit-animation-name: rotateCounterClockWise;
   -webkit-animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
-/* line 70, ../../src/scss/_theater.scss */
-main #theater .eye .dashedRing {
+/* line 71, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye .dashedRing {
   background-image: url("../../vector/eyeDashed.svg");
   position: absolute;
   width: 124px;
   height: 124px;
 }
-/* line 76, ../../src/scss/_theater.scss */
-main #theater .eye .circles {
+/* line 77, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .eye .circles {
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
   -ms-border-radius: 100%;
@@ -229,4 +242,27 @@ main #theater .eye .circles {
   position: absolute;
   width: 124px;
   height: 124px;
+}
+/* line 9, ../../src/scss/_canvas.scss */
+main #canvasWrapper #canvas {
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+  border-radius: 25px;
+  box-shadow: inset 0 0 0 2px #6aa1ff, inset 0 0 100px black;
+  -moz-box-shadow: inset 0 0 0 2px #6aa1ff, inset 0 0 100px black;
+  -webkit-box-shadow: inset 0 0 0 2px #6aa1ff, inset 0 0 100px black;
+  position: absolute;
+  background-color: rgba(30, 34, 48, 0.2);
+}
+/* line 1, ../../src/scss/_overlay.scss */
+main #overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url("../../img/overlay.png");
+  pointer-events: none;
 }

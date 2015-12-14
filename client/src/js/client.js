@@ -26,7 +26,7 @@
                 if (rawFile.status === 200 || rawFile.status === 0) {
                     var content = rawFile.responseText;
                     console.log(content);
-                    if(callback) callback(content);
+                    if (callback) callback(content);
                 }
             }
         };
@@ -36,8 +36,16 @@
     var color = {};
     color.bg = '#1e2230';
     color.blue = '#26477d';
+    color.white = 'rgba(255,255,255,1)';
 
     var elements = {};
+    elements.canvasWrapper = $('#canvasWrapper');
+    elements.canvasWrapperWidth = function(){
+        return elements.canvasWrapper.width();
+    };
+    elements.canvasWrapperHeight = function(){
+        return elements.canvasWrapper.height();
+    };
     elements.theater = $('#theater');
     elements.skull = $('#skull');
 
@@ -49,8 +57,8 @@
             'src': url
         });
     };
-    audio.startPlaylist = function(trackListArray){
-        var src = trackListArray[Math.floor(Math.random()*trackListArray.length)];
+    audio.startPlaylist = function(trackListArray) {
+        var src = trackListArray[Math.floor(Math.random() * trackListArray.length)];
         audio.setSrc(test.dir + src);
         audio.play();
     };
@@ -70,8 +78,8 @@
         return audio.dancer.getWaveform();
     };
     audio.kick = audio.dancer.createKick({
-        frequency: [0, 10],
-        threshold: 0.5,
+        frequency: [1, 3],
+        threshold: 0.4,
         onKick: function(mag) {
             ui.kick();
         },
@@ -85,52 +93,49 @@
     ui.c = document.getElementById("canvas");
     ui.ctx = ui.c.getContext("2d");
     ui.resize = function() {
-        ui.c.width = w.w();
-        ui.c.height = w.h();
+        ui.c.width = elements.canvasWrapperWidth();
+        ui.c.height = elements.canvasWrapperHeight();
     };
     ui.render = function() {
         requestAnimationFrame(ui.render);
-
         var curMs = timing.getCurMs();
-
         ui.draw();
     };
+    ui.canAnimateKick = true;
     ui.kick = function() {
         console.log('kick');
+        ui.canAnimateKick = false;
         TweenLite.to(elements.theater, 0.1, {
-            scale: 1.1
+            scale: 1.05,
+            onComplete: function() {
+                ui.canAnimateKick = true;
+            }
         });
     };
     ui.noKick = function() {
-        TweenLite.to(elements.theater, 0.4, {
-            scale: 1
-        });
+        if (ui.canAnimateKick) {
+
+            TweenLite.to(elements.theater, 0.1, {
+                scale: 1
+            });
+        }
     };
     ui.draw = function() {
         var spectrum = {};
         spectrum.data = audio.dancer.getSpectrum();
-        spectrum.size = spectrum.data.length / 2;
-        spectrum.barWidth = (w.w() / spectrum.size) * 2.5;
+        spectrum.size = spectrum.data.length / 6;
+        spectrum.barWidth = (elements.canvasWrapperWidth() / spectrum.size);
         x = 0;
 
-        ui.ctx.fillStyle = color.bg;
-        ui.ctx.fillRect(0, 0, w.w(), w.h());
+        ui.ctx.clearRect(0, 0, elements.canvasWrapperWidth(), elements.canvasWrapperHeight());
         for (var i = 0; i < spectrum.size; i++) {
             spectrum.barHeight = spectrum.data[i] * 1500;
-            ui.ctx.fillStyle = color.blue;
-            ui.ctx.fillRect(x, w.h() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-            x += spectrum.barWidth;
+            ui.ctx.fillStyle = color.white;
+            ui.ctx.fillRect(x, elements.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
+            x += spectrum.barWidth*2;
         }
     };
 
-    //Starting it all
-    tool.readFile(test.dir+'tracklist.txt', function(data){
-        data = data.split(',');
-        console.log(data);
-        audio.startPlaylist(data);
-        ui.render();
-    });
-    ui.resize();
 
     var timing = {};
     timing.deadline = '2015-12-31';
@@ -161,4 +166,15 @@
     console.log('hours:' + rem.hours);
     console.log('minutes:' + rem.minutes);
     console.log('seconds:' + rem.seconds);
+
+
+
+    //Starting it all
+    tool.readFile(test.dir + 'tracklist.txt', function(data) {
+        data = data.split(',');
+        console.log(data);
+        audio.startPlaylist(data);
+        ui.render();
+    });
+    ui.resize();
 })();
