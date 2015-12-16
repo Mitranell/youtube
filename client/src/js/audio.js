@@ -1,7 +1,9 @@
 var test = require('./test.js');
-var ui = require('./ui.js');
+var elements = require('./elements.js');
 
+audio = new Audio();
 dancer = new Dancer();
+
 setSrc = function(url) {
     dancer.load({
         'src': url
@@ -31,10 +33,10 @@ kick = dancer.createKick({
     frequency: [1, 3],
     threshold: 0.4,
     onKick: function(mag) {
-        ui.kick();
+        elements.kick();
     },
     offKick: function(mag) {
-        ui.noKick();
+        elements.noKick();
     }
 });
 kick.on();

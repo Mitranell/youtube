@@ -1,16 +1,6 @@
 var audio = require('./audio.js');
 var timing = require('./timing.js');
-
-var elements = {};
-elements.canvasWrapper = $('#canvasWrapper');
-elements.canvasWrapperWidth = function(){
-    return elements.canvasWrapper.width();
-};
-elements.canvasWrapperHeight = function(){
-    return elements.canvasWrapper.height();
-};
-elements.theater = $('#theater');
-elements.skull = $('#skull');
+var elements = require('./elements.js');
 
 var color = {};
 color.bg = '#1e2230';
@@ -27,25 +17,6 @@ render = function() {
     requestAnimationFrame(render);
     var curMs = timing.getCurMs();
     draw();
-};
-canAnimateKick = true;
-kick = function() {
-    console.log('kick');
-    canAnimateKick = false;
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1.05,
-        onComplete: function() {
-            canAnimateKick = true;
-        }
-    });
-};
-noKick = function() {
-    if (canAnimateKick) {
-
-        TweenLite.to(elements.theater, 0.1, {
-            scale: 1
-        });
-    }
 };
 draw = function() {
     var spectrum = {};
@@ -64,8 +35,6 @@ draw = function() {
 };
 
 module.exports = {
-  kick : kick,
-  noKick : noKick,
   render : render,
   resize : resize
 };

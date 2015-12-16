@@ -1,7 +1,7 @@
 var timing = require('./timing.js');
 var test = require('./test.js');
-var audio = require('./audio.js');
 var ui = require('./ui.js');
+var audio = require('./audio.js');
 
     $(window).resize(function() {
         ui.resize();
