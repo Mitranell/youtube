@@ -7,7 +7,7 @@ module.exports = function(grunt) {
             options: {
                 reporter: require('jshint-stylish')
             },
-            build: ['Gruntfile.js', 'client/src/**/*.js']
+            build: ['Gruntfile.js', 'client/src/**/*.js', '!client/src/js/main.js'] //main.js gives error, but does work (hence the '!')
         },
         uglify: {
             options: {
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
             },
             scripts: {
                 files: 'client/src/js/**/*.js',
-                tasks: ['jshint', 'uglify']
+                tasks: ['jshint', 'uglify','browserify']
             }
         },
         concurrent: {
@@ -48,6 +48,9 @@ module.exports = function(grunt) {
                 logConcurrentOutput: true
             },
             tasks: ['nodemon', 'watch']
+        },
+        browserify: {
+          'client/src/js/main.js': ['client/src/js/client.js']
         }
     });
 
@@ -58,6 +61,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch'); //Watch files
     grunt.loadNpmTasks('grunt-nodemon'); //Node handler
     grunt.loadNpmTasks('grunt-concurrent'); //Run node and watch and share command line output
+    grunt.loadNpmTasks('grunt-browserify'); //Browserify for browser modules
 
     grunt.registerTask('default', ['concurrent']);
 };

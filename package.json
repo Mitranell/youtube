@@ -24,6 +24,7 @@
     "grunt-contrib-compass": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-nodemon": "latest",
-    "grunt-concurrent": "latest"
+    "grunt-concurrent": "latest",
+    "grunt-browserify": "latest"
   }
 }
