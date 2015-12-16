@@ -1,8 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var test = require('./test.js');
-var ui = require('./ui.js');
+var elements = require('./elements.js');
 
+audio = new Audio();
 dancer = new Dancer();
+
 setSrc = function(url) {
     dancer.load({
         'src': url
@@ -32,10 +34,10 @@ kick = dancer.createKick({
     frequency: [1, 3],
     threshold: 0.4,
     onKick: function(mag) {
-        ui.kick();
+        elements.kick();
     },
     offKick: function(mag) {
-        ui.noKick();
+        elements.noKick();
     }
 });
 kick.on();
@@ -45,11 +47,11 @@ module.exports = {
   startPlaylist : startPlaylist
 };
 
-},{"./test.js":3,"./ui.js":5}],2:[function(require,module,exports){
+},{"./elements.js":3,"./test.js":4}],2:[function(require,module,exports){
 var timing = require('./timing.js');
 var test = require('./test.js');
-var audio = require('./audio.js');
 var ui = require('./ui.js');
+var audio = require('./audio.js');
 
     $(window).resize(function() {
         ui.resize();
@@ -88,12 +90,52 @@ var ui = require('./ui.js');
     });
     ui.resize();
 
-},{"./audio.js":1,"./test.js":3,"./timing.js":4,"./ui.js":5}],3:[function(require,module,exports){
+},{"./audio.js":1,"./test.js":4,"./timing.js":5,"./ui.js":6}],3:[function(require,module,exports){
+canvasWrapper = $('#canvasWrapper');
+canvasWrapperWidth = function(){
+    return canvasWrapper.width();
+};
+canvasWrapperHeight = function(){
+    return canvasWrapper.height();
+};
+this.theater = $('#theater');
+this.skull = $('#skull');
+
+canAnimateKick = true;
+kick = function() {
+    console.log('kick');
+    canAnimateKick = false;
+    TweenLite.to(theater, 0.1, {
+        scale: 1.05,
+        onComplete: function() {
+            canAnimateKick = true;
+        }
+    });
+};
+noKick = function() {
+    if (canAnimateKick) {
+
+        TweenLite.to(theater, 0.1, {
+            scale: 1
+        });
+    }
+};
+
+module.exports = {
+  canvasWrapperWidth : canvasWrapperWidth,
+  canvasWrapperHeight : canvasWrapperHeight,
+  theater : theater,
+  skull : skull,
+  kick : kick,
+  noKick : noKick
+};
+
+},{}],4:[function(require,module,exports){
 this.track = '1.Hardstyle637Mark van der Pijl.mp3';
 this.dir = '../client/tracks/';
 this.src = this.dir + this.track;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 deadline = '2016-01-01';
 getRemaining = function() {
     var t = Date.parse(deadline) - Date.now();
@@ -127,20 +169,10 @@ module.exports = {
   getCurMs : getCurMs
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var audio = require('./audio.js');
 var timing = require('./timing.js');
-
-var elements = {};
-elements.canvasWrapper = $('#canvasWrapper');
-elements.canvasWrapperWidth = function(){
-    return elements.canvasWrapper.width();
-};
-elements.canvasWrapperHeight = function(){
-    return elements.canvasWrapper.height();
-};
-elements.theater = $('#theater');
-elements.skull = $('#skull');
+var elements = require('./elements.js');
 
 var color = {};
 color.bg = '#1e2230';
@@ -157,25 +189,6 @@ render = function() {
     requestAnimationFrame(render);
     var curMs = timing.getCurMs();
     draw();
-};
-canAnimateKick = true;
-kick = function() {
-    console.log('kick');
-    canAnimateKick = false;
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1.05,
-        onComplete: function() {
-            canAnimateKick = true;
-        }
-    });
-};
-noKick = function() {
-    if (canAnimateKick) {
-
-        TweenLite.to(elements.theater, 0.1, {
-            scale: 1
-        });
-    }
 };
 draw = function() {
     var spectrum = {};
@@ -194,10 +207,8 @@ draw = function() {
 };
 
 module.exports = {
-  kick : kick,
-  noKick : noKick,
   render : render,
   resize : resize
 };
 
-},{"./audio.js":1,"./timing.js":4}]},{},[2]);
+},{"./audio.js":1,"./elements.js":3,"./timing.js":5}]},{},[2]);
