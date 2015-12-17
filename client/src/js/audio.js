@@ -1,7 +1,5 @@
-var test = require('./test.js');
 var elements = require('./elements.js');
 
-audio = new Audio();
 dancer = new Dancer();
 
 setSrc = function(url) {
@@ -11,7 +9,7 @@ setSrc = function(url) {
 };
 startPlaylist = function(trackListArray) {
     var src = trackListArray[Math.floor(Math.random() * trackListArray.length)];
-    setSrc(test.dir + src);
+    setSrc('../client/tracks/' + src);
     play();
 };
 play = function() {
@@ -29,6 +27,9 @@ getSpectrum = function() {
 getWaveform = function() {
     return dancer.getWaveform();
 };
+isPlaying = function() {
+  return dancer.isPlaying();
+};
 kick = dancer.createKick({
     frequency: [1, 3],
     threshold: 0.4,
@@ -43,5 +44,6 @@ kick.on();
 
 module.exports = {
   getSpectrum : getSpectrum,
-  startPlaylist : startPlaylist
+  startPlaylist : startPlaylist,
+  isPlaying : isPlaying
 };
