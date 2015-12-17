@@ -19,14 +19,12 @@ getCurMs = function() {
 getRemainingMs = function() {
     return getRemaining().total;
 };
-console.log('CurMs:' + getCurMs());
-console.log('Till deadline:');
-var rem = getRemaining();
-console.log('Days:' + rem.days);
-console.log('hours:' + rem.hours);
-console.log('minutes:' + rem.minutes);
-console.log('seconds:' + rem.seconds);
+clock = function(){
+  var rem = getRemaining();
+  document.getElementById("clock").innerHTML = 'days: ' + rem.days + '<br>' + 'hours: '+ rem.hours + '<br>' + 'minutes: ' + rem.minutes + '<br>' + 'seconds: ' + rem.seconds;
+};
 
 module.exports = {
-  getCurMs : getCurMs
+  getCurMs : getCurMs,
+  clock : clock
 };

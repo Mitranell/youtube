@@ -33,7 +33,6 @@ var track = require('./track.js');
     //Starting it all
     tool.readFile('../client/tracks/tracklist.txt', function(data) {
         data = data.split(',');
-        console.log(data);
         track.getInfo(data);
         audio.startPlaylist(data);
         ui.render();
