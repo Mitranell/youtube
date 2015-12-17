@@ -1,7 +1,7 @@
 var timing = require('./timing.js');
-var test = require('./test.js');
 var ui = require('./ui.js');
 var audio = require('./audio.js');
+var track = require('./track.js');
 
     $(window).resize(function() {
         ui.resize();
@@ -23,7 +23,6 @@ var audio = require('./audio.js');
             if (rawFile.readyState === 4) {
                 if (rawFile.status === 200 || rawFile.status === 0) {
                     var content = rawFile.responseText;
-                    console.log(content);
                     if (callback) callback(content);
                 }
             }
@@ -32,9 +31,10 @@ var audio = require('./audio.js');
     };
 
     //Starting it all
-    tool.readFile(test.dir + 'tracklist.txt', function(data) {
+    tool.readFile('../client/tracks/tracklist.txt', function(data) {
         data = data.split(',');
         console.log(data);
+        track.getInfo(data);
         audio.startPlaylist(data);
         ui.render();
     });

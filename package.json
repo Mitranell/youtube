@@ -14,7 +14,9 @@
     "body-parser": "latest",
     "ytdl-core": "latest",
     "fluent-ffmpeg": "latest",
-    "google-spreadsheet": "latest"
+    "google-spreadsheet": "latest",
+    "videoinfo" : "latest",
+    "youtube-node" : "latest"
   },
   "devDependencies": {
     "grunt": "latest",
