@@ -10,7 +10,6 @@ this.skull = $('#skull');
 
 canAnimateKick = true;
 kick = function() {
-    console.log('kick');
     canAnimateKick = false;
     TweenLite.to(theater, 0.1, {
         scale: 1.05,
@@ -21,7 +20,6 @@ kick = function() {
 };
 noKick = function() {
     if (canAnimateKick) {
-
         TweenLite.to(theater, 0.1, {
             scale: 1
         });

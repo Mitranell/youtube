@@ -17,6 +17,7 @@ render = function() {
     requestAnimationFrame(render);
     var curMs = timing.getCurMs();
     draw();
+    timing.clock();
 };
 draw = function() {
     var spectrum = {};
