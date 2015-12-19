@@ -10,24 +10,12 @@ var express = require('express'),
 
 //Declare client folder as static so that every request gets through
 app.use('/client', express.static(__dirname + '/client'));
-app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.json()); //For sending/receiving application/json
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-
-//Default Server route
-app.get('/', function(req, res) {
-    res.sendFile('index.html', {
-        root: __dirname + '/client'
-    });
-});
- 
-
 var api = new Api(express, app);
-
-
-//Start the node server on specified port
 http.listen(1337, function() {
     console.log('Server set up on 127.0.0.1:1337');
 });

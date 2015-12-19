@@ -1,49 +1,31 @@
-var elements = require('./elements.js');
-
-dancer = new Dancer();
-
-setSrc = function(url) {
+//We can use multiple dancer instances (e.g. one for music, one for voice etc..)
+var dancer = new Dancer();
+var setSrc = function(url) {
     dancer.load({
         'src': url
     });
 };
-startPlaylist = function(trackListArray) {
-    var src = trackListArray[Math.floor(Math.random() * trackListArray.length)];
+
+//Public audio object
+var audio = {};
+audio.play = function(src) {
     setSrc('../client/tracks/' + src);
-    play();
-};
-play = function() {
     dancer.play();
 };
-pause = function() {
+audio.pause = function() {
     dancer.pause();
 };
-setVolume = function(vol) {
+audio.setVolume = function(vol) {
     dancer.setVolume(vol); //Volume from 0 to 1
 };
-getSpectrum = function() {
+audio.getSpectrum = function() {
     return dancer.getSpectrum();
 };
-getWaveform = function() {
-    return dancer.getWaveform();
+audio.isPlaying = function() {
+    return dancer.isPlaying();
 };
-isPlaying = function() {
-  return dancer.isPlaying();
+audio.setKick = function(options) {
+    kick = dancer.createKick(options);
+    kick.on();
 };
-kick = dancer.createKick({
-    frequency: [1, 3],
-    threshold: 0.4,
-    onKick: function(mag) {
-        elements.kick();
-    },
-    offKick: function(mag) {
-        elements.noKick();
-    }
-});
-kick.on();
-
-module.exports = {
-  getSpectrum : getSpectrum,
-  startPlaylist : startPlaylist,
-  isPlaying : isPlaying
-};
+module.exports = audio;

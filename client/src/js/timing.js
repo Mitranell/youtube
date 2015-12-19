@@ -1,30 +1,36 @@
-deadline = '2016-01-01';
-getRemaining = function() {
-    var t = Date.parse(deadline) - Date.now();
-    var s = Math.floor((t / 1000) % 60);
-    var m = Math.floor((t / 1000 / 60) % 60);
-    var h = Math.floor((t / (1000 * 60 * 60)) % 24);
-    var d = Math.floor(t / (1000 * 60 * 60 * 24));
-    return {
-        'total': t,
-        'days': d,
-        'hours': h,
-        'minutes': m,
-        'seconds': s
-    };
+// Public timing object
+var timing = {};
+timing.deadline = '2016-01-01';
+timing.getRemaining = function(){
+    function toDD(val) {
+        if (val < 10) return '0' + val;
+        else return val;
+    }
+    var obj = {};
+    obj.total   =  Date.parse(timing.deadline) - Date.now();
+    obj.day     =  toDD(Math.floor(obj.total / (1000 * 60 * 60 * 24)));
+    obj.hours   =  toDD(Math.floor((obj.total / (1000 * 60 * 60)) % 24));
+    obj.minutes =  toDD(Math.floor((obj.total / 1000 / 60) % 60));
+    obj.seconds =  toDD(Math.floor((obj.total / 1000) % 60));
+    return obj;
 };
-getCurMs = function() {
+timing.getCurMs = function() {
     return Date.now();
 };
-getRemainingMs = function() {
+timing.getRemainingMs = function() {
     return getRemaining().total;
 };
-clock = function(){
-  var rem = getRemaining();
-  document.getElementById("clock").innerHTML = 'days: ' + rem.days + '<br>' + 'hours: '+ rem.hours + '<br>' + 'minutes: ' + rem.minutes + '<br>' + 'seconds: ' + rem.seconds;
+var lastSecond = timing.getRemaining().seconds;
+timing.clock = function(callback) {
+    var rem = timing.getRemaining();
+    var curSecond = rem.seconds;
+    if(curSecond !== lastSecond){
+        var obj = {};
+        obj.h = rem.hours;
+        obj.m = rem.minutes;
+        obj.s = rem.seconds;
+        if(callback) callback(obj);
+    }
 };
 
-module.exports = {
-  getCurMs : getCurMs,
-  clock : clock
-};
+module.exports = timing;

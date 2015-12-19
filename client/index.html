@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="client/dist/css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -39,8 +40,17 @@
                     <div class="dashedRing"></div>
                 </div>
             </section>
-            <div id="clock"></div>
-            <div id="track"></div>
+        </div>
+        <div id="bar">
+            <div id="trackInfo" class="item">
+
+            </div>
+            <div id="clock" class="item">
+                <i class="fa fa-clock-o"></i> 
+                <span id="hours"></span> :
+                <span id="minutes"></span> .
+                <span id="seconds"></span>
+            </div>
         </div>
         <div id="overlay"></div>
     </main>
@@ -49,7 +59,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dancer.js/0.4.0/dancer.min.js"></script>
 
-    <script src="client/src/js/main.js"></script>
+    <script src="client/dist/js/main.js"></script>
 
 </body>
 
