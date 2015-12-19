@@ -4,7 +4,7 @@
     left: 25px;
     right: 25px;
     top: 25px;
-    bottom: 25px;
+    bottom: 100px;
     @import 'theater';
     #canvas {
         @include border-radius(25px);

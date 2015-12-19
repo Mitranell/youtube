@@ -17,25 +17,11 @@ var media = function() {
     };
 
 
-    var tool = {};
-    //Get Id from any format of youtube url.
-    tool.getYTID = function(url) {
-        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-        var match = url.match(regExp);
-        return (match && match[7].length == 11) ? match[7] : false;
-    };
-    //Normalize any format to the generic video url. (Built because mobile urls caused problems)
-    tool.YTNormalize = function(url) {
-        var id = tool.getYTID(url);
-        return 'https://www.youtube.com/watch?v=' + id;
-    };
-
-
     //Download FLV and convert to mp3
-    this.convert = function(url, name, genre, callback) {
+    this.convert = function(url, id, name, genre, callback) {
         var nameString = genre + Math.floor(Math.random() * 1000).toString() + name;
         var flv = path.resolve(trackFolder, nameString + '.flv');
-        ytdl(tool.YTNormalize(url))
+        ytdl(url)
             .pipe(fs.createWriteStream(flv))
             .on('finish', function() {
                 ffmpeg()

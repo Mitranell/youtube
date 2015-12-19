@@ -50,7 +50,7 @@ module.exports = function(grunt) {
             tasks: ['nodemon', 'watch']
         },
         browserify: {
-          'client/src/js/main.js': ['client/src/js/client.js']
+          'client/dist/js/main.js': ['client/src/js/client.js']
         }
     });
 

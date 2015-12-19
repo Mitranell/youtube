@@ -1,40 +1,34 @@
 var timing = require('./timing.js');
-var ui = require('./ui.js');
 var audio = require('./audio.js');
-var track = require('./track.js');
+var tool = require('./tool.js');
+var dom = require('./dom.js');
+var UI = require('./ui.js');
+var ui = new UI(dom);
 
-    $(window).resize(function() {
-        ui.resize();
+//Complete logic of the cycle of the app goes here
+var cycle = {};
+cycle.start = function(data) {
+    audio.setKick(dom.kickOptions());
+    var randomTrack = data[Math.floor(Math.random() * data.length)];
+    dom.setTitle(randomTrack.ytTitle);
+    audio.play(randomTrack.src);
+    cycle.loop();
+};
+cycle.loop = function(){
+    requestAnimationFrame(cycle.loop);
+    ui.render(audio.getSpectrum(), dom);
+    timing.clock(function(h,m,s){
+        dom.setClock(h,m,s);
     });
+};
 
-    var w = {};
-    w.w = function() {
-        return $(window).width();
-    };
-    w.h = function() {
-        return $(window).height();
-    };
+//Starting it all
+tool.getTracklist(function(data) {
+    cycle.start(data);
+});
 
-    var tool = {};
-    tool.readFile = function(file, callback) {
-        var rawFile = new XMLHttpRequest();
-        rawFile.open("GET", file, false);
-        rawFile.onreadystatechange = function() {
-            if (rawFile.readyState === 4) {
-                if (rawFile.status === 200 || rawFile.status === 0) {
-                    var content = rawFile.responseText;
-                    if (callback) callback(content);
-                }
-            }
-        };
-        rawFile.send(null);
-    };
-
-    //Starting it all
-    tool.readFile('../client/tracks/tracklist.txt', function(data) {
-        data = data.split(',');
-        track.getInfo(data);
-        audio.startPlaylist(data);
-        ui.render();
-    });
+//On window resize
+$(window).resize(function() {
     ui.resize();
+});
+ui.resize();

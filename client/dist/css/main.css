@@ -79,7 +79,7 @@ main #canvasWrapper {
   left: 25px;
   right: 25px;
   top: 25px;
-  bottom: 25px;
+  bottom: 100px;
 }
 /* line 1, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater {
@@ -265,4 +265,43 @@ main #overlay {
   right: 0;
   background-image: url("../../img/overlay.png");
   pointer-events: none;
+}
+/* line 1, ../../src/scss/_bar.scss */
+main #bar {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  height: 100px;
+  left: 25px;
+  right: 25px;
+  bottom: 0;
+  line-height: 100px;
+  padding-left: 25px;
+  padding-right: 25px;
+  text-transform: uppercase;
+}
+/* line 12, ../../src/scss/_bar.scss */
+main #bar .item {
+  position: absolute;
+  height: 100%;
+  top: 0;
+}
+/* line 16, ../../src/scss/_bar.scss */
+main #bar .item#trackInfo {
+  left: 0;
+  font-size: 2rem;
+}
+/* line 20, ../../src/scss/_bar.scss */
+main #bar .item#clock {
+  right: 0;
+  font-size: 5rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: right;
+}
+/* line 26, ../../src/scss/_bar.scss */
+main #bar .item#clock span {
+  font-weight: 700;
+  color: white;
 }
