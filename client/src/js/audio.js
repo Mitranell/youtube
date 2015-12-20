@@ -24,8 +24,4 @@ audio.getSpectrum = function() {
 audio.isPlaying = function() {
     return dancer.isPlaying();
 };
-audio.setKick = function(options) {
-    kick = dancer.createKick(options);
-    kick.on();
-};
 module.exports = audio;

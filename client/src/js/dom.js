@@ -31,21 +31,10 @@ dom.kickOptions = function(){
         }
     };
 };
-dom.kick = function() {
-    canAnimateKick = false;
+dom.kick = function(factor) {
     TweenLite.to(elements.theater, 0.1, {
-        scale: 1.05,
-        onComplete: function() {
-            canAnimateKick = true;
-        }
+        scale: 1 + factor
     });
-};
-dom.noKick = function() {
-    if (canAnimateKick) {
-        TweenLite.to(elements.theater, 0.1, {
-            scale: 1
-        });
-    }
 };
 dom.setClock = function(obj){
     elements.clock.hours.html(obj.h);

@@ -12,8 +12,6 @@ yt.getName = function(id, callback) {
 
         var title = result.items[0].snippet.title;
         var titleBase64 = new Buffer(title).toString('base64');
-        console.log(title);
-        console.log(titleBase64);
         if (callback) callback(titleBase64);
     });
 };

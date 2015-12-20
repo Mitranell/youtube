@@ -8,7 +8,6 @@ var ui = new UI(dom);
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
-    audio.setKick(dom.kickOptions());
     var randomTrack = data[Math.floor(Math.random() * data.length)];
     dom.setTitle(randomTrack.ytTitle);
     audio.play(randomTrack.src);

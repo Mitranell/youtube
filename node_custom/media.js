@@ -8,14 +8,12 @@ var fs = require('fs'), //Filesystem
 
 var media = function() {
 
-
     var error = {};
     error.err = function(err, callback) {
         if (callback) callback({
             error: err
         });
     };
-
 
     //Download FLV and convert to mp3
     this.convert = function(url, id, name, genre, callback) {
