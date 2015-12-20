@@ -39,7 +39,7 @@ var ui = new UI(dom);
 var cycle = {};
 cycle.start = function(data) {
     var randomTrack = data[Math.floor(Math.random() * data.length)];
-    dom.setTitle(randomTrack.ytTitle);
+    dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
     audio.play(randomTrack.src);
     cycle.loop();
 };
@@ -106,9 +106,9 @@ dom.setClock = function(obj){
     elements.clock.minutes.html(obj.m);
     elements.clock.seconds.html(obj.s);
 };
-dom.setTitle = function(title){
+dom.setTrackInfo = function(title,name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(decoded);
+    elements.trackInfo.html(decoded + ' - ' + name);
 };
 
 module.exports = dom;
@@ -196,16 +196,18 @@ var ui = function(dom) {
 
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
-        for (var i = 0; i < spectrum.size; i++) {
-            //TODO We have to choose a value which is best for the TV
-            spectrum.barHeight = spectrum.data[i] * 1300;
-            c.ctx.fillStyle = color.white;
-            c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-            x += spectrum.barWidth * 2; //Makes it display 1/12th of the specturm
+        for (var i = 0; i < spectrum.data.length; i++) {
+            if (i < spectrum.size) {
+              //TODO We have to choose a value which is best for the TV
+              spectrum.barHeight = spectrum.data[i] * 1300;
+              c.ctx.fillStyle = color.white;
+              c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
+              x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
+            }
 
             if (spectrum.data[i] > max) max = spectrum.data[i];
         }
-
+        
         //TODO choose between these two lines (or variants of it):
         //dom.kick((spectrum.data[1] + spectrum.data[2]) / 4);
         dom.kick(max / 2);

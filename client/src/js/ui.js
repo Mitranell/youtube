@@ -21,16 +21,18 @@ var ui = function(dom) {
 
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
-        for (var i = 0; i < spectrum.size; i++) {
-            //TODO We have to choose a value which is best for the TV
-            spectrum.barHeight = spectrum.data[i] * 1300;
-            c.ctx.fillStyle = color.white;
-            c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-            x += spectrum.barWidth * 2; //Makes it display 1/12th of the specturm
+        for (var i = 0; i < spectrum.data.length; i++) {
+            if (i < spectrum.size) {
+              //TODO We have to choose a value which is best for the TV
+              spectrum.barHeight = spectrum.data[i] * 1300;
+              c.ctx.fillStyle = color.white;
+              c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
+              x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
+            }
 
             if (spectrum.data[i] > max) max = spectrum.data[i];
         }
-
+        
         //TODO choose between these two lines (or variants of it):
         //dom.kick((spectrum.data[1] + spectrum.data[2]) / 4);
         dom.kick(max / 2);

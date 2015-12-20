@@ -9,7 +9,7 @@ var ui = new UI(dom);
 var cycle = {};
 cycle.start = function(data) {
     var randomTrack = data[Math.floor(Math.random() * data.length)];
-    dom.setTitle(randomTrack.ytTitle);
+    dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
     audio.play(randomTrack.src);
     cycle.loop();
 };
