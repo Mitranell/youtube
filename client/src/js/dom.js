@@ -2,15 +2,26 @@ canAnimateKick = true;
 
 //Dom element hooks
 var elements = {};
+elements.shirt = $('#shirt');
 elements.canvasWrapper = $('#canvasWrapper');
+elements.canvas = $('#canvas');
 elements.theater = $('#theater');
 elements.skull = $('#skull');
+elements.logo = $('#logo');
 elements.clock = {};
 elements.clock.hours = $('#hours');
 elements.clock.minutes = $('#minutes');
 elements.clock.seconds = $('#seconds');
 elements.trackInfo = $('#trackInfo');
 
+elements.admin = {};
+elements.admin.div = $('#admin');
+elements.admin.themeDots = elements.admin.div.find('.themeDot');
+elements.admin.themeDots.click(function(div){
+    var i = $(this).index();
+    dom.changeTheme(i);
+    console.log(i);
+});
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -22,25 +33,23 @@ dom.canvasWrapperHeight = function(){
 dom.kickOptions = function(){
     return {
         frequency: [1, 1],
-        threshold: 0.4,
+        threshold: 0.5,
         onKick: function(mag) {
-            dom.kick(mag);
+            dom.kick(mag, 0.4);
         },
         offKick: function(mag) {
             dom.noKick(mag);
         }
     };
 };
-dom.kick = function() {
+dom.kick = function(mag, thres) {
     canAnimateKick = false;
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1.05,
-        onComplete: function() {
-            canAnimateKick = true;
-        }
+    var scale = 1 + (mag - thres) * 0.1;
+    TweenLite.set(elements.theater, {
+        scale: scale
     });
 };
-dom.noKick = function() {
+dom.noKick = function(mag) {
     if (canAnimateKick) {
         TweenLite.to(elements.theater, 0.1, {
             scale: 1
@@ -55,6 +64,30 @@ dom.setClock = function(obj){
 dom.setTitle = function(title){
     var decoded = atob(title); //Decode the base64 title string
     elements.trackInfo.html(decoded);
+};
+
+dom.themes = [
+    'red',
+    'blue',
+    'black',
+    'yellow'
+];
+dom.changeTheme = function(i){
+    var name = this.themes[i];
+    function setTheme(elem){
+        $.each(dom.themes, function(i, val){
+            elem.removeClass(val);
+        });
+        elem.addClass(name);
+    }
+    setTheme(elements.shirt);
+    setTheme(elements.canvas);
+    setTheme(elements.logo);
+};
+
+dom.admin = {};
+dom.admin.open = function(){
+    elements.admin.div.toggleClass('open');
 };
 
 module.exports = dom;

@@ -1,0 +1,65 @@
+#shirt {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+    top: 50%;
+    left: 50%;
+    margin-top: -540px;
+    margin-left: -960px;
+    svg {
+        #skinLayer {
+            path,
+            polygon {
+                fill: #edbba2;
+            }
+        }
+    }
+    &.red {
+        svg {
+            #shirtLayer {
+                path,
+                polygon {
+                    fill: #7d2626;
+                }
+            }
+        }
+    }
+    &.blue {
+        svg {
+            #shirtLayer {
+                path,
+                polygon {
+                    fill: #26477d;
+                }
+            }
+        }
+    }
+    &.blue {
+        svg {
+            #shirtLayer {
+                path,
+                polygon {
+                    fill: #555555;
+                }
+            }
+        }
+    }
+    &.yellow {
+        svg {
+            #shirtLayer {
+                path,
+                polygon {
+                    fill: #7d6a26;
+                }
+            }
+        }
+    }
+}
+#mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    @include box-shadow(inset 0 0 250px 250px rgba(0,0,0,0.9));
+}

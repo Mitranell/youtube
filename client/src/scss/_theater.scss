@@ -20,11 +20,35 @@
                 filter:drop-shadow( 0px 0px 10px #000 );
             }
         }
-        &.detailing {
-
-        }
-        &.teeth {
-
+        &.logo {
+            &.red {
+                svg {
+                    polygon {
+                        fill: #7d2626;
+                    }
+                }
+            }
+            &.blue {
+                svg {
+                    polygon {
+                        fill: #26477d;
+                    }
+                }
+            }
+            &.black {
+                svg {
+                    polygon {
+                        fill: black;
+                    }
+                }
+            }
+            &.yellow {
+                svg {
+                    polygon {
+                        fill: #7d6a26;
+                    }
+                }
+            }
         }
     }
     @include keyframes(rotateClockWise) {

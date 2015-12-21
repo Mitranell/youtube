@@ -38,6 +38,27 @@ var tool = require('./tool.js');
 var dom = require('./dom.js');
 var UI = require('./ui.js');
 var ui = new UI(dom);
+var Snow = require('./snow.js');
+var snow = new Snow(dom, tool);
+
+//On window resize
+$(window).resize(function() {
+    ui.resize();
+    snow.resize();
+});
+ui.resize();
+snow.resize();
+
+$(document).keydown(function(e) {
+    switch(e.which) {
+        case 65: // a
+            dom.admin.open();
+        break;
+
+        default: return;
+    }
+    e.preventDefault();
+});
 
 //Complete logic of the cycle of the app goes here
 var cycle = {};
@@ -46,13 +67,15 @@ cycle.start = function(data) {
     var randomTrack = data[Math.floor(Math.random() * data.length)];
     dom.setTitle(randomTrack.ytTitle);
     audio.play(randomTrack.src);
+    dom.changeTheme(randomTrack.genre.split('.')[0]-1);
     cycle.loop();
 };
 cycle.loop = function(){
     requestAnimationFrame(cycle.loop);
     ui.render(audio.getSpectrum(), dom);
-    timing.clock(function(h,m,s){
-        dom.setClock(h,m,s);
+    snow.render(dom);
+    timing.clock(function(obj){
+        dom.setClock(obj);
     });
 };
 
@@ -61,26 +84,31 @@ tool.getTracklist(function(data) {
     cycle.start(data);
 });
 
-//On window resize
-$(window).resize(function() {
-    ui.resize();
-});
-ui.resize();
-
-},{"./audio.js":1,"./dom.js":3,"./timing.js":4,"./tool.js":5,"./ui.js":6}],3:[function(require,module,exports){
+},{"./audio.js":1,"./dom.js":3,"./snow.js":4,"./timing.js":5,"./tool.js":6,"./ui.js":7}],3:[function(require,module,exports){
 canAnimateKick = true;
 
 //Dom element hooks
 var elements = {};
+elements.shirt = $('#shirt');
 elements.canvasWrapper = $('#canvasWrapper');
+elements.canvas = $('#canvas');
 elements.theater = $('#theater');
 elements.skull = $('#skull');
+elements.logo = $('#logo');
 elements.clock = {};
 elements.clock.hours = $('#hours');
 elements.clock.minutes = $('#minutes');
 elements.clock.seconds = $('#seconds');
 elements.trackInfo = $('#trackInfo');
 
+elements.admin = {};
+elements.admin.div = $('#admin');
+elements.admin.themeDots = elements.admin.div.find('.themeDot');
+elements.admin.themeDots.click(function(div){
+    var i = $(this).index();
+    dom.changeTheme(i);
+    console.log(i);
+});
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -92,25 +120,23 @@ dom.canvasWrapperHeight = function(){
 dom.kickOptions = function(){
     return {
         frequency: [1, 1],
-        threshold: 0.4,
+        threshold: 0.5,
         onKick: function(mag) {
-            dom.kick(mag);
+            dom.kick(mag, 0.4);
         },
         offKick: function(mag) {
             dom.noKick(mag);
         }
     };
 };
-dom.kick = function() {
+dom.kick = function(mag, thres) {
     canAnimateKick = false;
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1.05,
-        onComplete: function() {
-            canAnimateKick = true;
-        }
+    var scale = 1 + (mag - thres) * 0.1;
+    TweenLite.set(elements.theater, {
+        scale: scale
     });
 };
-dom.noKick = function() {
+dom.noKick = function(mag) {
     if (canAnimateKick) {
         TweenLite.to(elements.theater, 0.1, {
             scale: 1
@@ -127,9 +153,108 @@ dom.setTitle = function(title){
     elements.trackInfo.html(decoded);
 };
 
+dom.themes = [
+    'red',
+    'blue',
+    'black',
+    'yellow'
+];
+dom.changeTheme = function(i){
+    var name = this.themes[i];
+    function setTheme(elem){
+        $.each(dom.themes, function(i, val){
+            elem.removeClass(val);
+        });
+        elem.addClass(name);
+    }
+    setTheme(elements.shirt);
+    setTheme(elements.canvas);
+    setTheme(elements.logo);
+};
+
+dom.admin = {};
+dom.admin.open = function(){
+    elements.admin.div.toggleClass('open');
+};
+
 module.exports = dom;
 
 },{}],4:[function(require,module,exports){
+var snow = function(dom, tool) {
+    var c = {};
+    c.c = document.getElementById("snowCanvas");
+    c.ctx = c.c.getContext("2d");
+    this.resize = function() {
+        c.c.width = tool.get.ww();
+        c.c.height = tool.get.wh();
+    };
+    //snowflake particles
+    var mp = 50; //max particles
+    var particles = [];
+    for (var i = 0; i < mp; i++) {
+        particles.push({
+            x: Math.random() * c.c.width, //x-coordinate
+            y: Math.random() * c.c.height, //y-coordinate
+            r: Math.random() * 4 + 1, //radius
+            d: Math.random() * mp //density
+        });
+    }
+    var angle = 0;
+    function update() {
+        angle += 0.01;
+        for (var i = 0; i < mp; i++) {
+            var p = particles[i];
+            p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
+            p.x += Math.sin(angle) * 2;
+            if (p.x > c.c.width + 5 || p.x < -5 || p.y > c.c.height) {
+                if (i % 3 > 0) //66.67% of the flakes
+                {
+                    particles[i] = {
+                        x: Math.random() * c.c.width,
+                        y: -10,
+                        r: p.r,
+                        d: p.d
+                    };
+                } else {
+                    //If the flake is exitting from the right
+                    if (Math.sin(angle) > 0) {
+                        //Enter from the left
+                        particles[i] = {
+                            x: -5,
+                            y: Math.random() * c.c.height,
+                            r: p.r,
+                            d: p.d
+                        };
+                    } else {
+                        //Enter from the right
+                        particles[i] = {
+                            x: c.c.width + 5,
+                            y: Math.random() * c.c.height,
+                            r: p.r,
+                            d: p.d
+                        };
+                    }
+                }
+            }
+        }
+    }
+    this.render = function() {
+        c.ctx.clearRect(0, 0, c.c.width, c.c.height);
+
+        c.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        c.ctx.beginPath();
+        for (var i = 0; i < mp; i++) {
+            var p = particles[i];
+            c.ctx.moveTo(p.x, p.y);
+            c.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+        }
+        c.ctx.fill();
+        update();
+    };
+};
+module.exports = snow;
+
+},{}],5:[function(require,module,exports){
 // Public timing object
 var timing = {};
 timing.deadline = '2016-01-01';
@@ -138,8 +263,9 @@ timing.getRemaining = function(){
         if (val < 10) return '0' + val;
         else return val;
     }
+    var timeZoneCorrection = 1000 * 60 * 60; //One hour
     var obj = {};
-    obj.total   =  Date.parse(timing.deadline) - Date.now();
+    obj.total   =  Date.parse(timing.deadline) - Date.now() - timeZoneCorrection;
     obj.day     =  toDD(Math.floor(obj.total / (1000 * 60 * 60 * 24)));
     obj.hours   =  toDD(Math.floor((obj.total / (1000 * 60 * 60)) % 24));
     obj.minutes =  toDD(Math.floor((obj.total / 1000 / 60) % 60));
@@ -167,7 +293,7 @@ timing.clock = function(callback) {
 
 module.exports = timing;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var tool = {};
 tool.getTracklist = function(callback) {
     $.ajax({
@@ -188,7 +314,7 @@ tool.get.wh = function() {
 
 module.exports = tool;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var color = {};
 color.bg = '#1e2230';
 color.blue = '#26477d';
