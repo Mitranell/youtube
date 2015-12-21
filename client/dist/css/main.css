@@ -47,8 +47,6 @@ textarea {
 /* line 4, ../../src/scss/main.scss */
 body {
   background-color: #000;
-  background-image: url("../../img/shirt.png");
-  background-position: center;
   overflow-y: scroll;
   color: #fff;
 }
@@ -67,6 +65,53 @@ main {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+/* line 1, ../../src/scss/_shirt.scss */
+main #shirt {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  top: 50%;
+  left: 50%;
+  margin-top: -540px;
+  margin-left: -960px;
+}
+/* line 11, ../../src/scss/_shirt.scss */
+main #shirt svg #skinLayer path,
+main #shirt svg #skinLayer polygon {
+  fill: #edbba2;
+}
+/* line 20, ../../src/scss/_shirt.scss */
+main #shirt.red svg #shirtLayer path,
+main #shirt.red svg #shirtLayer polygon {
+  fill: #7d2626;
+}
+/* line 30, ../../src/scss/_shirt.scss */
+main #shirt.blue svg #shirtLayer path,
+main #shirt.blue svg #shirtLayer polygon {
+  fill: #26477d;
+}
+/* line 40, ../../src/scss/_shirt.scss */
+main #shirt.blue svg #shirtLayer path,
+main #shirt.blue svg #shirtLayer polygon {
+  fill: #555555;
+}
+/* line 50, ../../src/scss/_shirt.scss */
+main #shirt.yellow svg #shirtLayer path,
+main #shirt.yellow svg #shirtLayer polygon {
+  fill: #7d6a26;
+}
+/* line 58, ../../src/scss/_shirt.scss */
+main #mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: inset 0 0 250px 250px rgba(0, 0, 0, 0.9);
+  -moz-box-shadow: inset 0 0 250px 250px rgba(0, 0, 0, 0.9);
+  -webkit-box-shadow: inset 0 0 250px 250px rgba(0, 0, 0, 0.9);
 }
 /* line 1, ../../src/scss/_canvas.scss */
 main #canvasWrapper {
@@ -106,6 +151,22 @@ main #canvasWrapper #theater .item.skull svg {
 /* line 16, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .item.skull svg path {
   fill: #fff;
+}
+/* line 26, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .item.logo.red svg polygon {
+  fill: #7d2626;
+}
+/* line 33, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .item.logo.blue svg polygon {
+  fill: #26477d;
+}
+/* line 40, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .item.logo.black svg polygon {
+  fill: black;
+}
+/* line 47, ../../src/scss/_theater.scss */
+main #canvasWrapper #theater .item.logo.yellow svg polygon {
+  fill: #7d6a26;
 }
 @-webkit-keyframes rotateClockWise {
   0% {
@@ -187,7 +248,7 @@ main #canvasWrapper #theater .item.skull svg path {
     -webkit-transform: rotate(-360deg);
   }
 }
-/* line 46, ../../src/scss/_theater.scss */
+/* line 70, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye {
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
@@ -200,36 +261,36 @@ main #canvasWrapper #theater .eye {
   top: 168px;
   left: 50%;
 }
-/* line 53, ../../src/scss/_theater.scss */
+/* line 77, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye.left {
   margin-left: -136px;
 }
-/* line 55, ../../src/scss/_theater.scss */
+/* line 79, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye.left .dashedRing {
   -webkit-animation-name: rotateClockWise;
   -webkit-animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
-/* line 62, ../../src/scss/_theater.scss */
+/* line 86, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye.right {
   margin-left: 12px;
 }
-/* line 64, ../../src/scss/_theater.scss */
+/* line 88, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye.right .dashedRing {
   -webkit-animation-name: rotateCounterClockWise;
   -webkit-animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
-/* line 71, ../../src/scss/_theater.scss */
+/* line 95, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye .dashedRing {
   background-image: url("../../vector/eyeDashed.svg");
   position: absolute;
   width: 124px;
   height: 124px;
 }
-/* line 77, ../../src/scss/_theater.scss */
+/* line 101, ../../src/scss/_theater.scss */
 main #canvasWrapper #theater .eye .circles {
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
@@ -250,11 +311,40 @@ main #canvasWrapper #canvas {
   -ms-border-radius: 25px;
   -o-border-radius: 25px;
   border-radius: 25px;
-  box-shadow: inset 0 0 0 2px #6aa1ff, inset 0 0 100px black;
-  -moz-box-shadow: inset 0 0 0 2px #6aa1ff, inset 0 0 100px black;
-  -webkit-box-shadow: inset 0 0 0 2px #6aa1ff, inset 0 0 100px black;
   position: absolute;
   background-color: rgba(30, 34, 48, 0.2);
+}
+/* line 13, ../../src/scss/_canvas.scss */
+main #canvasWrapper #canvas.red {
+  box-shadow: inset 0 0 0 4px #ff6a6a, inset 0 0 100px black;
+  -moz-box-shadow: inset 0 0 0 4px #ff6a6a, inset 0 0 100px black;
+  -webkit-box-shadow: inset 0 0 0 4px #ff6a6a, inset 0 0 100px black;
+}
+/* line 17, ../../src/scss/_canvas.scss */
+main #canvasWrapper #canvas.blue {
+  box-shadow: inset 0 0 0 4px #6aa1ff, inset 0 0 100px black;
+  -moz-box-shadow: inset 0 0 0 4px #6aa1ff, inset 0 0 100px black;
+  -webkit-box-shadow: inset 0 0 0 4px #6aa1ff, inset 0 0 100px black;
+}
+/* line 21, ../../src/scss/_canvas.scss */
+main #canvasWrapper #canvas.black {
+  box-shadow: inset 0 0 0 4px #000, inset 0 0 100px black;
+  -moz-box-shadow: inset 0 0 0 4px #000, inset 0 0 100px black;
+  -webkit-box-shadow: inset 0 0 0 4px #000, inset 0 0 100px black;
+}
+/* line 25, ../../src/scss/_canvas.scss */
+main #canvasWrapper #canvas.yellow {
+  box-shadow: inset 0 0 0 4px #ffe76a, inset 0 0 100px black;
+  -moz-box-shadow: inset 0 0 0 4px #ffe76a, inset 0 0 100px black;
+  -webkit-box-shadow: inset 0 0 0 4px #ffe76a, inset 0 0 100px black;
+}
+/* line 1, ../../src/scss/_snow.scss */
+main #snow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 /* line 1, ../../src/scss/_overlay.scss */
 main #overlay {
@@ -304,4 +394,78 @@ main #bar .item#clock {
 main #bar .item#clock span {
   font-weight: 700;
   color: white;
+}
+/* line 1, ../../src/scss/_admin.scss */
+main #admin {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  position: absolute;
+  width: 300px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 100;
+  left: -300px;
+}
+/* line 9, ../../src/scss/_admin.scss */
+main #admin.open {
+  left: 0;
+}
+/* line 12, ../../src/scss/_admin.scss */
+main #admin .title {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  background-color: black;
+  padding-left: 25px;
+}
+/* line 22, ../../src/scss/_admin.scss */
+main #admin .item {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+  width: 100%;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+/* line 29, ../../src/scss/_admin.scss */
+main #admin .item .themeDot {
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+  -ms-border-radius: 100%;
+  -o-border-radius: 100%;
+  border-radius: 100%;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  -moz-box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  -webkit-box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  position: relative;
+  float: left;
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+}
+/* line 37, ../../src/scss/_admin.scss */
+main #admin .item .themeDot.red {
+  background-color: red;
+}
+/* line 40, ../../src/scss/_admin.scss */
+main #admin .item .themeDot.blue {
+  background-color: blue;
+}
+/* line 43, ../../src/scss/_admin.scss */
+main #admin .item .themeDot.black {
+  background-color: black;
+}
+/* line 46, ../../src/scss/_admin.scss */
+main #admin .item .themeDot.yellow {
+  background-color: yellow;
 }
