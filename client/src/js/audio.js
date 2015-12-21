@@ -21,7 +21,13 @@ audio.setVolume = function(vol) {
 audio.getSpectrum = function() {
     return dancer.getSpectrum();
 };
-audio.isPlaying = function() {
-    return dancer.isPlaying();
+audio.getTime = function() {
+    return dancer.getTime();
+};
+audio.deltaTime = function(previous) {
+    return dancer.getTime() - previous > 0;
+};
+audio.isPlaying = function(count) {
+    return count < 10; //Not too low to be sure the audio is playing
 };
 module.exports = audio;
