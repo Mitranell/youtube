@@ -42,28 +42,19 @@ dom.kickOptions = function(){
         }
     };
 };
-dom.kick = function(mag, thres) {
-    canAnimateKick = false;
-    var scale = 1 + (mag - thres) * 0.1;
-    TweenLite.set(elements.theater, {
-        scale: scale
+dom.kick = function(factor) {
+    TweenLite.to(elements.theater, 0.1, {
+        scale: 1 + factor
     });
-};
-dom.noKick = function(mag) {
-    if (canAnimateKick) {
-        TweenLite.to(elements.theater, 0.1, {
-            scale: 1
-        });
-    }
 };
 dom.setClock = function(obj){
     elements.clock.hours.html(obj.h);
     elements.clock.minutes.html(obj.m);
     elements.clock.seconds.html(obj.s);
 };
-dom.setTitle = function(title){
+dom.setTrackInfo = function(title,name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(decoded);
+    elements.trackInfo.html(decoded + ' - ' + name);
 };
 
 dom.themes = [

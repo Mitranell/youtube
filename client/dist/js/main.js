@@ -25,10 +25,6 @@ audio.getSpectrum = function() {
 audio.isPlaying = function() {
     return dancer.isPlaying();
 };
-audio.setKick = function(options) {
-    kick = dancer.createKick(options);
-    kick.on();
-};
 module.exports = audio;
 
 },{}],2:[function(require,module,exports){
@@ -63,9 +59,8 @@ $(document).keydown(function(e) {
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
-    audio.setKick(dom.kickOptions());
     var randomTrack = data[Math.floor(Math.random() * data.length)];
-    dom.setTitle(randomTrack.ytTitle);
+    dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
     audio.play(randomTrack.src);
     dom.changeTheme(randomTrack.genre.split('.')[0]-1);
     cycle.loop();
@@ -129,28 +124,17 @@ dom.kickOptions = function(){
         }
     };
 };
-dom.kick = function(mag, thres) {
-    canAnimateKick = false;
-    var scale = 1 + (mag - thres) * 0.1;
-    TweenLite.set(elements.theater, {
-        scale: scale
-    });
-};
-dom.noKick = function(mag) {
-    if (canAnimateKick) {
-        TweenLite.to(elements.theater, 0.1, {
-            scale: 1
-        });
-    }
+dom.kick = function(factor) {
+    TweenLite.to(elements.theater, 0.1, {2});
 };
 dom.setClock = function(obj){
     elements.clock.hours.html(obj.h);
     elements.clock.minutes.html(obj.m);
     elements.clock.seconds.html(obj.s);
 };
-dom.setTitle = function(title){
+dom.setTrackInfo = function(title,name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(decoded);
+    elements.trackInfo.html(decoded + ' - ' + name);
 };
 
 dom.themes = [
@@ -257,7 +241,7 @@ module.exports = snow;
 },{}],5:[function(require,module,exports){
 // Public timing object
 var timing = {};
-timing.deadline = '2016-01-01';
+timing.deadline = '2016-01-01 00:00'; //00:00 is important for timezone
 timing.getRemaining = function(){
     function toDD(val) {
         if (val < 10) return '0' + val;
@@ -329,6 +313,7 @@ var ui = function(dom) {
         c.c.height = dom.canvasWrapperHeight();
     };
     this.render = function(spectrumData) {
+        var max = 0;
         var x = 0;
         var spectrum = {};
         spectrum.data = spectrumData;
@@ -337,12 +322,21 @@ var ui = function(dom) {
 
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
-        for (var i = 0; i < spectrum.size; i++) {
-            spectrum.barHeight = spectrum.data[i] * 1300;
-            c.ctx.fillStyle = color.white;
-            c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-            x += spectrum.barWidth * 2; //Makes it display 1/12th of the specturm
+        for (var i = 0; i < spectrum.data.length; i++) {
+            if (i < spectrum.size) {
+              //TODO We have to choose a value which is best for the TV
+              spectrum.barHeight = spectrum.data[i] * 1300;
+              c.ctx.fillStyle = color.white;
+              c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
+              x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
+            }
+
+            if (spectrum.data[i] > max) max = spectrum.data[i];
         }
+
+        //TODO choose between these two lines (or variants of it):
+        //dom.kick((spectrum.data[1] + spectrum.data[2]) / 4);
+        dom.kick(max / 2);
     };
 };
 module.exports = ui;
