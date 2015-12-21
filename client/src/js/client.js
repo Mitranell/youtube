@@ -29,9 +29,8 @@ $(document).keydown(function(e) {
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
-    audio.setKick(dom.kickOptions());
     var randomTrack = data[Math.floor(Math.random() * data.length)];
-    dom.setTitle(randomTrack.ytTitle);
+    dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
     audio.play(randomTrack.src);
     dom.changeTheme(randomTrack.genre.split('.')[0]-1);
     cycle.loop();

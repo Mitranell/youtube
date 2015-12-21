@@ -40,7 +40,7 @@ module.exports = function(grunt) {
             },
             scripts: {
                 files: 'client/src/js/**/*.js',
-                tasks: ['jshint'/*, 'uglify'*/,'browserify']
+                tasks: ['jshint', 'uglify','browserify']
             }
         },
         concurrent: {
