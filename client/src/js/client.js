@@ -6,6 +6,8 @@ var UI = require('./ui.js');
 var ui = new UI(dom);
 var Snow = require('./snow.js');
 var snow = new Snow(dom, tool);
+var time = 0;
+var count = 0;
 
 //On window resize
 $(window).resize(function() {
@@ -33,15 +35,31 @@ cycle.start = function(data) {
     dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
     audio.play(randomTrack.src);
     dom.changeTheme(randomTrack.genre.split('.')[0]-1);
-    cycle.loop();
+    cycle.loop(data);
 };
-cycle.loop = function(){
-    requestAnimationFrame(cycle.loop);
+cycle.loop = function(data){
+    requestAnimationFrame(function(){
+      cycle.loop(data);
+    });
     ui.render(audio.getSpectrum(), dom);
     snow.render(dom);
     timing.clock(function(obj){
         dom.setClock(obj);
     });
+
+    //Counts the amount of times there is no difference between playing time
+    count = (audio.deltaTime(time) ?  0 : count + 1);
+
+    if(!audio.isPlaying(count)) {
+      count = 0;
+      audio.pause();
+      var randomTrack = data[Math.floor(Math.random() * data.length)];
+      dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
+      audio.play(randomTrack.src);
+    }
+
+    //Declare at the end for delay
+    time = audio.getTime();
 };
 
 //Starting it all

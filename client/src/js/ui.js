@@ -13,6 +13,7 @@ var ui = function(dom) {
     };
     this.render = function(spectrumData) {
         var max = 0;
+        var rotation = 0;
         var x = 0;
         var spectrum = {};
         spectrum.data = spectrumData;
@@ -21,20 +22,19 @@ var ui = function(dom) {
 
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
-        for (var i = 0; i < spectrum.data.length; i++) {
-            if (i < spectrum.size) {
-              spectrum.barHeight = spectrum.data[i] * dom.canvasWrapperHeight();
-              c.ctx.fillStyle = color.white;
-              c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-              x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
-            }
+        for (var i = 0; i < spectrum.size; i++) {
+            spectrum.barHeight = spectrum.data[i] * dom.canvasWrapperHeight();
+            c.ctx.fillStyle = color.white;
+            c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
+            x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
 
-            if (spectrum.data[i] > max) max = spectrum.data[i];
+            if (max < spectrum.data[i]) {
+              max = spectrum.data[i];
+              rotation = (2 * i / spectrum.size - 1) * 10; //Rotate left and right 10 degrees
+            }
         }
 
-        //TODO choose between these two lines (or variants of it):
-        //dom.kick((spectrum.data[1] + spectrum.data[2]) / 4);
-        dom.kick(max / 2);
+        dom.kick(max / 2, rotation);
     };
 };
 module.exports = ui;
