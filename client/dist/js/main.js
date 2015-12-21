@@ -125,7 +125,9 @@ dom.kickOptions = function(){
     };
 };
 dom.kick = function(factor) {
-    TweenLite.to(elements.theater, 0.1, {2});
+    TweenLite.to(elements.theater, 0.1, {
+        scale: 1 + factor
+    });
 };
 dom.setClock = function(obj){
     elements.clock.hours.html(obj.h);
@@ -324,8 +326,7 @@ var ui = function(dom) {
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
         for (var i = 0; i < spectrum.data.length; i++) {
             if (i < spectrum.size) {
-              //TODO We have to choose a value which is best for the TV
-              spectrum.barHeight = spectrum.data[i] * 1300;
+              spectrum.barHeight = spectrum.data[i] * dom.canvasWrapperHeight();
               c.ctx.fillStyle = color.white;
               c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
               x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
