@@ -20,9 +20,8 @@ yt.getID = function(url) {
     var match = url.match(regExp);
     return (match && match[7].length == 11) ? match[7] : false;
 };
-//Normalize any format to the generic video url. (Built because mobile urls caused problems)
 yt.normalize = function(url) {
-    var id = tool.getYTID(url);
+    var id = yt.getID(url);
     return 'https://www.youtube.com/watch?v=' + id;
 };
 
@@ -43,14 +42,10 @@ var api = function(express, app) {
 
     app.get('/convert', function(req, res) {
         media.getSheet(function(data) {
-
             var rows = data.length;
-
             var i = {};
             i.array = 0;
             i.tracks = 1;
-
-            var trackList = [];
 
             var track = {};
             track.list = [];
@@ -63,28 +58,17 @@ var api = function(express, app) {
             };
 
             function execute() {
-                var url = data[i.array]['track' + i.tracks.toString() + 'youtubeurl'];
-                url = yt.normalize(url);
-                var id = yt.getID(url);
-                var name = data[i.array].jouwnaam;
-                var genre = data[i.array]['track' + i.tracks.toString() + 'genre'];
+                var obj = {};
+                obj.url = yt.normalize(data[i.array]['track' + i.tracks.toString() + 'youtubeurl']);
+                obj.id = yt.getID(obj.url);
+                obj.name = data[i.array].jouwnaam;
+                obj.genre = data[i.array]['track' + i.tracks.toString() + 'genre'];
 
-                console.log('url: ' + url);
-                console.log('name: ' + name);
-                console.log('genre: ' + genre);
-
-                media.convert(url, id, name, genre, function(data) {
-                    var obj = {};
-                    obj.url = url;
-                    obj.id = id;
-                    obj.name = name;
-                    obj.genre = genre;
+                media.convert(obj.url, obj.id, obj.name, obj.genre, function(data) {
                     obj.src = data;
-
                     yt.getName(obj.id, function(titleBase64) {
                         obj.ytTitle = titleBase64;
-                        trackList.push(obj);
-
+                        track.list.push(obj);
                         if (i.tracks < 3) {
                             i.tracks++;
                             execute();
@@ -93,8 +77,8 @@ var api = function(express, app) {
                             i.tracks = 1;
                             execute();
                         } else if (i.array == rows - 1) {
-                            track.writeListFile(JSON.stringify(trackList), function() {
-                                res.send(trackList);
+                            track.writeListFile(JSON.stringify(track.list), function() {
+                                res.send(track.list);
                             });
                         }
                     });

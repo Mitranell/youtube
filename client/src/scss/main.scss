@@ -3,8 +3,8 @@
 @import 'setup';
 body {
     background-color: $color-dark-black;
-    background-image: url("../../img/shirt.png");
-    background-position: center;
+    //background-image: url("../../img/shirt.png");
+    //background-position: center;
     overflow-y: scroll;
     color: $color-white;
 }
@@ -19,7 +19,11 @@ main{
     position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    @import 'shirt';
     @import 'canvas';
+    @import 'snow';
     @import 'overlay';
     @import 'bar';
+    @import 'admin';
 }
