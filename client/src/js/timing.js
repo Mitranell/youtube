@@ -6,9 +6,8 @@ timing.getRemaining = function(){
         if (val < 10) return '0' + val;
         else return val;
     }
-    var timeZoneCorrection = 1000 * 60 * 60; //One hour
     var obj = {};
-    obj.total   =  Date.parse(timing.deadline) - Date.now() - timeZoneCorrection;
+    obj.total   =  Date.parse(timing.deadline) - Date.now();
     obj.day     =  toDD(Math.floor(obj.total / (1000 * 60 * 60 * 24)));
     obj.hours   =  toDD(Math.floor((obj.total / (1000 * 60 * 60)) % 24));
     obj.minutes =  toDD(Math.floor((obj.total / 1000 / 60) % 60));
