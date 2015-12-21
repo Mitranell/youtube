@@ -31,9 +31,10 @@ dom.kickOptions = function(){
         }
     };
 };
-dom.kick = function(factor) {
+dom.kick = function(factor, rotation) {
     TweenLite.to(elements.theater, 0.1, {
-        scale: 1 + factor
+        scale: 1 + factor,
+        rotation: rotation
     });
 };
 dom.setClock = function(obj){
