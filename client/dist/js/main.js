@@ -22,8 +22,14 @@ audio.setVolume = function(vol) {
 audio.getSpectrum = function() {
     return dancer.getSpectrum();
 };
-audio.isPlaying = function() {
-    return dancer.isPlaying();
+audio.getTime = function() {
+    return dancer.getTime();
+};
+audio.deltaTime = function(previous) {
+    return dancer.getTime() - previous > 0;
+};
+audio.isPlaying = function(count) {
+    return count < 10; //Not too low to be sure the audio is playing
 };
 module.exports = audio;
 
@@ -34,21 +40,53 @@ var tool = require('./tool.js');
 var dom = require('./dom.js');
 var UI = require('./ui.js');
 var ui = new UI(dom);
+var Snow = require('./snow.js');
+var snow = new Snow(dom, tool);
+var time = 0;
+var count = 0;
+var trackNumber = 0;
+
+//On window resize
+$(window).resize(function() {
+    ui.resize();
+    snow.resize();
+});
+ui.resize();
+snow.resize();
+
+$(document).keydown(function(e) {
+    switch(e.which) {
+        case 65: // a
+            dom.admin.open();
+        break;
+
+        default: return;
+    }
+    e.preventDefault();
+});
 
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
-    var randomTrack = data[Math.floor(Math.random() * data.length)];
-    dom.setTrackInfo(randomTrack.ytTitle, randomTrack.name);
-    audio.play(randomTrack.src);
-    cycle.loop();
+    playSong(data, trackNumber);
+    cycle.loop(data);
 };
-cycle.loop = function(){
-    requestAnimationFrame(cycle.loop);
-    ui.render(audio.getSpectrum(), dom);
-    timing.clock(function(h,m,s){
-        dom.setClock(h,m,s);
+cycle.loop = function(data){
+    requestAnimationFrame(function(){
+      cycle.loop(data);
     });
+    ui.render(audio.getSpectrum(), dom);
+    snow.render(dom);
+    timing.clock(function(obj){
+        dom.setClock(obj);
+    });
+
+    //Counts the amount of times there is no difference between playing time
+    count = (audio.deltaTime(time) ?  0 : count + 1);
+    checkSongFinished(data);
+
+    //Declare at the end for delay
+    time = audio.getTime();
 };
 
 //Starting it all
@@ -56,26 +94,57 @@ tool.getTracklist(function(data) {
     cycle.start(data);
 });
 
-//On window resize
-$(window).resize(function() {
-    ui.resize();
-});
-ui.resize();
+//Play song
+playSong = function(data, i) {
+  var track = data[i];
+  dom.setTrackInfo(track.ytTitle, track.name);
+  dom.changeTheme(track.genre.split('.')[0]-1);
+  audio.play(track.src);
+};
 
-},{"./audio.js":1,"./dom.js":3,"./timing.js":4,"./tool.js":5,"./ui.js":6}],3:[function(require,module,exports){
+checkSongFinished = function(data) {
+  if(!audio.isPlaying(count)) {
+    count = 0;
+    trackNumber++;
+    audio.pause();
+
+    if (trackNumber > data.length - 1) {
+      songsFinished();
+    } else {
+      playSong(data, trackNumber);
+    }
+  }
+};
+
+songsFinished = function(){
+  console.log('klaar');
+};
+
+},{"./audio.js":1,"./dom.js":3,"./snow.js":4,"./timing.js":5,"./tool.js":6,"./ui.js":7}],3:[function(require,module,exports){
 canAnimateKick = true;
 
 //Dom element hooks
 var elements = {};
+elements.shirt = $('#shirt');
 elements.canvasWrapper = $('#canvasWrapper');
+elements.canvas = $('#canvas');
 elements.theater = $('#theater');
 elements.skull = $('#skull');
+elements.logo = $('#logo');
 elements.clock = {};
 elements.clock.hours = $('#hours');
 elements.clock.minutes = $('#minutes');
 elements.clock.seconds = $('#seconds');
 elements.trackInfo = $('#trackInfo');
 
+elements.admin = {};
+elements.admin.div = $('#admin');
+elements.admin.themeDots = elements.admin.div.find('.themeDot');
+elements.admin.themeDots.click(function(div){
+    var i = $(this).index();
+    dom.changeTheme(i);
+    console.log(i);
+});
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -84,21 +153,10 @@ dom.canvasWrapperWidth = function(){
 dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
-dom.kickOptions = function(){
-    return {
-        frequency: [1, 1],
-        threshold: 0.4,
-        onKick: function(mag) {
-            dom.kick(mag);
-        },
-        offKick: function(mag) {
-            dom.noKick(mag);
-        }
-    };
-};
-dom.kick = function(factor) {
+dom.kick = function(factor, rotation) {
     TweenLite.to(elements.theater, 0.1, {
-        scale: 1 + factor
+        scale: 1 + factor,
+        rotation: rotation
     });
 };
 dom.setClock = function(obj){
@@ -111,9 +169,108 @@ dom.setTrackInfo = function(title,name){
     elements.trackInfo.html(decoded + ' - ' + name);
 };
 
+dom.themes = [
+    'red',
+    'blue',
+    'black',
+    'yellow'
+];
+dom.changeTheme = function(i){
+    var name = this.themes[i];
+    function setTheme(elem){
+        $.each(dom.themes, function(i, val){
+            elem.removeClass(val);
+        });
+        elem.addClass(name);
+    }
+    setTheme(elements.shirt);
+    setTheme(elements.canvas);
+    setTheme(elements.logo);
+};
+
+dom.admin = {};
+dom.admin.open = function(){
+    elements.admin.div.toggleClass('open');
+};
+
 module.exports = dom;
 
 },{}],4:[function(require,module,exports){
+var snow = function(dom, tool) {
+    var c = {};
+    c.c = document.getElementById("snowCanvas");
+    c.ctx = c.c.getContext("2d");
+    this.resize = function() {
+        c.c.width = tool.get.ww();
+        c.c.height = tool.get.wh();
+    };
+    //snowflake particles
+    var mp = 50; //max particles
+    var particles = [];
+    for (var i = 0; i < mp; i++) {
+        particles.push({
+            x: Math.random() * c.c.width, //x-coordinate
+            y: Math.random() * c.c.height, //y-coordinate
+            r: Math.random() * 4 + 1, //radius
+            d: Math.random() * mp //density
+        });
+    }
+    var angle = 0;
+    function update() {
+        angle += 0.01;
+        for (var i = 0; i < mp; i++) {
+            var p = particles[i];
+            p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
+            p.x += Math.sin(angle) * 2;
+            if (p.x > c.c.width + 5 || p.x < -5 || p.y > c.c.height) {
+                if (i % 3 > 0) //66.67% of the flakes
+                {
+                    particles[i] = {
+                        x: Math.random() * c.c.width,
+                        y: -10,
+                        r: p.r,
+                        d: p.d
+                    };
+                } else {
+                    //If the flake is exitting from the right
+                    if (Math.sin(angle) > 0) {
+                        //Enter from the left
+                        particles[i] = {
+                            x: -5,
+                            y: Math.random() * c.c.height,
+                            r: p.r,
+                            d: p.d
+                        };
+                    } else {
+                        //Enter from the right
+                        particles[i] = {
+                            x: c.c.width + 5,
+                            y: Math.random() * c.c.height,
+                            r: p.r,
+                            d: p.d
+                        };
+                    }
+                }
+            }
+        }
+    }
+    this.render = function() {
+        c.ctx.clearRect(0, 0, c.c.width, c.c.height);
+
+        c.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        c.ctx.beginPath();
+        for (var i = 0; i < mp; i++) {
+            var p = particles[i];
+            c.ctx.moveTo(p.x, p.y);
+            c.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+        }
+        c.ctx.fill();
+        update();
+    };
+};
+module.exports = snow;
+
+},{}],5:[function(require,module,exports){
 // Public timing object
 var timing = {};
 timing.deadline = '2016-01-01 00:00'; //00:00 is important for timezone
@@ -151,7 +308,7 @@ timing.clock = function(callback) {
 
 module.exports = timing;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var tool = {};
 tool.getTracklist = function(callback) {
     $.ajax({
@@ -172,7 +329,7 @@ tool.get.wh = function() {
 
 module.exports = tool;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var color = {};
 color.bg = '#1e2230';
 color.blue = '#26477d';
@@ -187,8 +344,12 @@ var ui = function(dom) {
         c.c.height = dom.canvasWrapperHeight();
     };
     this.render = function(spectrumData) {
-        var max = 0;
         var x = 0;
+        var max = 0;
+        var rotation = 0;
+        var range = 10; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
+        var degrees = 5; //Ammount of degrees the skull is rotate left and right
+
         var spectrum = {};
         spectrum.data = spectrumData;
         spectrum.size = spectrum.data.length / 6; //Only display the first 1/6th of the spectrum
@@ -197,20 +358,21 @@ var ui = function(dom) {
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
         for (var i = 0; i < spectrum.data.length; i++) {
-            if (i < spectrum.size) {
-              //TODO We have to choose a value which is best for the TV
-              spectrum.barHeight = spectrum.data[i] * 1300;
+            if(i < spectrum.size){
+              spectrum.barHeight = spectrum.data[i] * dom.canvasWrapperHeight();
               c.ctx.fillStyle = color.white;
               c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
               x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
             }
 
-            if (spectrum.data[i] > max) max = spectrum.data[i];
+            if (max < spectrum.data[i]) {
+              max = spectrum.data[i];
+              bar = (i > range) ? range : i;
+              rotation = (2 * bar / range  - 1) * degrees;
+            }
         }
-        
-        //TODO choose between these two lines (or variants of it):
-        //dom.kick((spectrum.data[1] + spectrum.data[2]) / 4);
-        dom.kick(max / 2);
+
+        dom.kick(max / 2, rotation);
     };
 };
 module.exports = ui;
