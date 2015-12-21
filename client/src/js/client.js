@@ -27,7 +27,7 @@ cycle.loop = function(data){
     //Counts the amount of times there is no difference between playing time
     count = (audio.deltaTime(time) ?  0 : count + 1);
 
-    if(/*!audio.isPlaying(count)*/ time > 5) {
+    if(!audio.isPlaying(count)) {
       count = 0;
       audio.pause();
       var randomTrack = data[Math.floor(Math.random() * data.length)];
