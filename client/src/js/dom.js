@@ -30,18 +30,6 @@ dom.canvasWrapperWidth = function(){
 dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
-dom.kickOptions = function(){
-    return {
-        frequency: [1, 1],
-        threshold: 0.5,
-        onKick: function(mag) {
-            dom.kick(mag, 0.4);
-        },
-        offKick: function(mag) {
-            dom.noKick(mag);
-        }
-    };
-};
 dom.kick = function(factor, rotation) {
     TweenLite.to(elements.theater, 0.1, {
         scale: 1 + factor,
