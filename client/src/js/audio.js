@@ -8,9 +8,14 @@ var setSrc = function(url) {
 
 //Public audio object
 var audio = {};
-audio.play = function(src) {
+audio.play = function(src, ended) {
+    audio.pause();
     setSrc('../client/tracks/' + src);
     dancer.play();
+
+    dancer.source.onended = function() {
+        if(ended) ended();
+    };
 };
 audio.pause = function() {
     dancer.pause();

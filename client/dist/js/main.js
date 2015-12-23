@@ -9,9 +9,14 @@ var setSrc = function(url) {
 
 //Public audio object
 var audio = {};
-audio.play = function(src) {
+audio.play = function(src, ended) {
+    audio.pause();
     setSrc('../client/tracks/' + src);
     dancer.play();
+
+    dancer.source.onended = function() {
+        if(ended) ended();
+    };
 };
 audio.pause = function() {
     dancer.pause();
@@ -42,9 +47,9 @@ var UI = require('./ui.js');
 var ui = new UI(dom);
 var Snow = require('./snow.js');
 var snow = new Snow(dom, tool);
-var time = 0;
-var count = 0;
-var trackNumber = 0;
+var Playlist = require('./playlist.js');
+var playlist = new Playlist(dom, audio);
+
 
 //On window resize
 $(window).resize(function() {
@@ -55,12 +60,13 @@ ui.resize();
 snow.resize();
 
 $(document).keydown(function(e) {
-    switch(e.which) {
+    switch (e.which) {
         case 65: // a
             dom.admin.open();
-        break;
+            break;
 
-        default: return;
+        default:
+            return;
     }
     e.preventDefault();
 });
@@ -68,25 +74,18 @@ $(document).keydown(function(e) {
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
-    playSong(data, trackNumber);
+    playlist.play(data);
     cycle.loop(data);
 };
-cycle.loop = function(data){
-    requestAnimationFrame(function(){
-      cycle.loop(data);
+cycle.loop = function(data) {
+    requestAnimationFrame(function() {
+        cycle.loop(data);
     });
     ui.render(audio.getSpectrum(), dom);
     snow.render(dom);
-    timing.clock(function(obj){
+    timing.clock(function(obj) {
         dom.setClock(obj);
     });
-
-    //Counts the amount of times there is no difference between playing time
-    count = (audio.deltaTime(time) ?  0 : count + 1);
-    checkSongFinished(data);
-
-    //Declare at the end for delay
-    time = audio.getTime();
 };
 
 //Starting it all
@@ -94,33 +93,7 @@ tool.getTracklist(function(data) {
     cycle.start(data);
 });
 
-//Play song
-playSong = function(data, i) {
-  var track = data[i];
-  dom.setTrackInfo(track.ytTitle, track.name);
-  dom.changeTheme(track.genre.split('.')[0]-1);
-  audio.play(track.src);
-};
-
-checkSongFinished = function(data) {
-  if(!audio.isPlaying(count)) {
-    count = 0;
-    trackNumber++;
-    audio.pause();
-
-    if (trackNumber > data.length - 1) {
-      songsFinished();
-    } else {
-      playSong(data, trackNumber);
-    }
-  }
-};
-
-songsFinished = function(){
-  console.log('klaar');
-};
-
-},{"./audio.js":1,"./dom.js":3,"./snow.js":4,"./timing.js":5,"./tool.js":6,"./ui.js":7}],3:[function(require,module,exports){
+},{"./audio.js":1,"./dom.js":3,"./playlist.js":4,"./snow.js":5,"./timing.js":6,"./tool.js":7,"./ui.js":8}],3:[function(require,module,exports){
 canAnimateKick = true;
 
 //Dom element hooks
@@ -196,6 +169,28 @@ dom.admin.open = function(){
 module.exports = dom;
 
 },{}],4:[function(require,module,exports){
+var playlist = function(dom, audio) {
+
+    var trackNumber = 0;
+
+    var handle = this;
+    this.play = function(data) {
+        var track = data[trackNumber];
+        dom.setTrackInfo(track.ytTitle, track.name);
+        dom.changeTheme(track.genre.split('.')[0] - 1);
+        audio.play(track.src, function() {
+            trackNumber++;
+            if (trackNumber > data.length - 1) songsFinished();
+            else handle.play(data);
+        });
+    };
+    var songsFinished = function() {
+        console.log('klaar');
+    };
+};
+module.exports = playlist;
+
+},{}],5:[function(require,module,exports){
 var snow = function(dom, tool) {
     var c = {};
     c.c = document.getElementById("snowCanvas");
@@ -270,7 +265,7 @@ var snow = function(dom, tool) {
 };
 module.exports = snow;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // Public timing object
 var timing = {};
 timing.deadline = '2016-01-01 00:00'; //00:00 is important for timezone
@@ -308,7 +303,7 @@ timing.clock = function(callback) {
 
 module.exports = timing;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var tool = {};
 tool.getTracklist = function(callback) {
     $.ajax({
@@ -329,7 +324,7 @@ tool.get.wh = function() {
 
 module.exports = tool;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var color = {};
 color.bg = '#1e2230';
 color.blue = '#26477d';
