@@ -1,34 +1,14 @@
-var timing = require('./timing.js');
-var audio = require('./audio.js');
-var tool = require('./tool.js');
-var dom = require('./dom.js');
-var UI = require('./ui.js');
-var ui = new UI(dom);
-var Snow = require('./snow.js');
-var snow = new Snow(dom, tool);
-var Playlist = require('./playlist.js');
-var playlist = new Playlist(dom, audio);
+var timing = require('./timing.js'),
+    audio = require('./audio.js'),
+    tool = require('./tool.js'),
+    dom = require('./dom.js'),
+    UI = require('./ui.js'),
+    ui = new UI(dom),
+    Snow = require('./snow.js'),
+    snow = new Snow(dom, tool),
+    Playlist = require('./playlist.js'),
+    playlist = new Playlist(dom, audio, timing);
 
-
-//On window resize
-$(window).resize(function() {
-    ui.resize();
-    snow.resize();
-});
-ui.resize();
-snow.resize();
-
-$(document).keydown(function(e) {
-    switch (e.which) {
-        case 65: // a
-            dom.admin.open();
-            break;
-
-        default:
-            return;
-    }
-    e.preventDefault();
-});
 
 //Complete logic of the cycle of the app goes here
 var cycle = {};
@@ -45,9 +25,22 @@ cycle.loop = function(data) {
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
+    playlist.progress(data, function(percentage){
+        dom.setProgressBar(percentage);
+    });
 };
+
 
 //Starting it all
 tool.getTracklist(function(data) {
     cycle.start(data);
 });
+
+
+//On window resize
+$(window).resize(function() {
+    ui.resize();
+    snow.resize();
+});
+ui.resize();
+snow.resize();

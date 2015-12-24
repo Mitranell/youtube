@@ -3,16 +3,14 @@ var fs = require('fs'), //Filesystem
     media = new mediaCore(),
     YouTube = require('youtube-node'),
     youtube = new YouTube();
-youtube.setKey('AIzaSyB1OOSpTREs85WUMvIgJvLTZKye4BVsoFU');
+    youtube.setKey('AIzaSyB1OOSpTREs85WUMvIgJvLTZKye4BVsoFU'),
+    moment = require('moment');
 
 var yt = {};
-yt.getName = function(id, callback) {
+yt.getData = function(id, callback) {
     youtube.getById(id, function(error, result) {
         if (error) return console.log(error);
-
-        var title = result.items[0].snippet.title;
-        var titleBase64 = new Buffer(title).toString('base64');
-        if (callback) callback(titleBase64);
+        if (callback) callback(result.items[0]);
     });
 };
 yt.getID = function(url) {
@@ -66,8 +64,13 @@ var api = function(express, app) {
 
                 media.convert(obj.url, obj.id, obj.name, obj.genre, function(data) {
                     obj.src = data;
-                    yt.getName(obj.id, function(titleBase64) {
+                    yt.getData(obj.id, function(result) {
+                        var title = result.snippet.title;
+                        var titleBase64 = new Buffer(title).toString('base64');
+                        var videoDuration = result.contentDetails.duration;
                         obj.ytTitle = titleBase64;
+                        obj.duration = moment.duration(videoDuration).asMilliseconds(); //Convert encoded Youtube duration to MS using moment
+
                         track.list.push(obj);
                         if (i.tracks < 3) {
                             i.tracks++;

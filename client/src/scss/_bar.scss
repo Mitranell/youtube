@@ -1,24 +1,21 @@
 #bar {
-    @include box-sizing();
     position: absolute;
     height: 100px;
-    left: 25px;
-    right: 25px;
+    width: 100%;
     bottom: 0;
     line-height: 100px;
-    padding-left: 25px;
-    padding-right: 25px;
     text-transform: uppercase;
     .item {
+        @include box-sizing();
         position: absolute;
         height: 100%;
         top: 0;
         &#trackInfo {
-            left: 0;
+            left: 25px;
             font-size: 2rem;
         }
         &#clock {
-            right: 0;
+            right: 25px;
             font-size: 5rem;
             font-weight: 400;
             color: rgba($color-white, 0.5);
@@ -28,5 +25,12 @@
                 color: rgba($color-white, 1);
             }
         }
+    }
+    #progress {
+        position: absolute;
+        height: 4px;
+        left: 0;
+        bottom: 0;
+        background-color: red;
     }
 }

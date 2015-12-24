@@ -39,37 +39,17 @@ audio.isPlaying = function(count) {
 module.exports = audio;
 
 },{}],2:[function(require,module,exports){
-var timing = require('./timing.js');
-var audio = require('./audio.js');
-var tool = require('./tool.js');
-var dom = require('./dom.js');
-var UI = require('./ui.js');
-var ui = new UI(dom);
-var Snow = require('./snow.js');
-var snow = new Snow(dom, tool);
-var Playlist = require('./playlist.js');
-var playlist = new Playlist(dom, audio);
+var timing = require('./timing.js'),
+    audio = require('./audio.js'),
+    tool = require('./tool.js'),
+    dom = require('./dom.js'),
+    UI = require('./ui.js'),
+    ui = new UI(dom),
+    Snow = require('./snow.js'),
+    snow = new Snow(dom, tool),
+    Playlist = require('./playlist.js'),
+    playlist = new Playlist(dom, audio, timing);
 
-
-//On window resize
-$(window).resize(function() {
-    ui.resize();
-    snow.resize();
-});
-ui.resize();
-snow.resize();
-
-$(document).keydown(function(e) {
-    switch (e.which) {
-        case 65: // a
-            dom.admin.open();
-            break;
-
-        default:
-            return;
-    }
-    e.preventDefault();
-});
 
 //Complete logic of the cycle of the app goes here
 var cycle = {};
@@ -86,12 +66,25 @@ cycle.loop = function(data) {
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
+    playlist.progress(data, function(percentage){
+        dom.setProgressBar(percentage);
+    });
 };
+
 
 //Starting it all
 tool.getTracklist(function(data) {
     cycle.start(data);
 });
+
+
+//On window resize
+$(window).resize(function() {
+    ui.resize();
+    snow.resize();
+});
+ui.resize();
+snow.resize();
 
 },{"./audio.js":1,"./dom.js":3,"./playlist.js":4,"./snow.js":5,"./timing.js":6,"./tool.js":7,"./ui.js":8}],3:[function(require,module,exports){
 canAnimateKick = true;
@@ -109,6 +102,7 @@ elements.clock.hours = $('#hours');
 elements.clock.minutes = $('#minutes');
 elements.clock.seconds = $('#seconds');
 elements.trackInfo = $('#trackInfo');
+elements.progress = $('#progress');
 
 elements.admin = {};
 elements.admin.div = $('#admin');
@@ -116,7 +110,6 @@ elements.admin.themeDots = elements.admin.div.find('.themeDot');
 elements.admin.themeDots.click(function(div){
     var i = $(this).index();
     dom.changeTheme(i);
-    console.log(i);
 });
 //Public dom object
 var dom = {};
@@ -140,6 +133,11 @@ dom.setClock = function(obj){
 dom.setTrackInfo = function(title,name){
     var decoded = atob(title); //Decode the base64 title string
     elements.trackInfo.html(decoded + ' - ' + name);
+};
+dom.setProgressBar = function(percentage){
+    TweenLite.set(elements.progress, {
+        width: percentage + '%'
+    });
 };
 
 dom.themes = [
@@ -166,27 +164,45 @@ dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
 };
 
+$(document).keydown(function(e) {
+    switch (e.which) {
+        case 65: // a
+            dom.admin.open();
+            break;
+
+        default:
+            return;
+    }
+    e.preventDefault();
+});
+
 module.exports = dom;
 
 },{}],4:[function(require,module,exports){
-var playlist = function(dom, audio) {
+var playlist = function(dom, audio, timing) {
 
     var trackNumber = 0;
+    var startMs = 0;
 
     var handle = this;
     this.play = function(data) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
+        startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
-            if (trackNumber > data.length - 1) songsFinished();
+            if (trackNumber > data.length - 1) console.log('klaar');
             else handle.play(data);
         });
     };
-    var songsFinished = function() {
-        console.log('klaar');
+    this.progress = function(data, callback) {
+        var dur = data[trackNumber].duration,
+            dif = timing.getCurMs() - startMs,
+            percentage = (dif / dur) * 100;
+        if (callback) callback(percentage);
     };
+
 };
 module.exports = playlist;
 
