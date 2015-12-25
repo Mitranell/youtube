@@ -158,6 +158,7 @@ dom.changeTheme = function(i){
     setTheme(elements.shirt);
     setTheme(elements.canvas);
     setTheme(elements.logo);
+    setTheme(elements.progress);
 };
 
 dom.admin = {};
@@ -386,7 +387,7 @@ var ui = function(dom) {
         var x = 0;
         var max = 0;
         var rotation = 0;
-        var range = 32; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
+        var range = 16; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
         var degrees = 5; //Ammount of degrees the skull is rotate left and right
 
         var spectrum = {};

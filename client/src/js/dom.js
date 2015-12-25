@@ -68,6 +68,7 @@ dom.changeTheme = function(i){
     setTheme(elements.shirt);
     setTheme(elements.canvas);
     setTheme(elements.logo);
+    setTheme(elements.progress);
 };
 
 dom.admin = {};

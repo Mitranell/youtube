@@ -398,7 +398,22 @@ main #bar #progress {
   height: 4px;
   left: 0;
   bottom: 0;
+}
+/* line 34, ../../src/scss/_bar.scss */
+main #bar #progress.red {
   background-color: red;
+}
+/* line 37, ../../src/scss/_bar.scss */
+main #bar #progress.blue {
+  background-color: blue;
+}
+/* line 40, ../../src/scss/_bar.scss */
+main #bar #progress.black {
+  background-color: black;
+}
+/* line 43, ../../src/scss/_bar.scss */
+main #bar #progress.yellow {
+  background-color: yellow;
 }
 /* line 1, ../../src/scss/_admin.scss */
 main #admin {
