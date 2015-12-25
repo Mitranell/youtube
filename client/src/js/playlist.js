@@ -26,6 +26,8 @@ var playlist = function(dom, audio, timing) {
             if(trackNumber > 0) {
                 trackNumber--;
                 handle.play(data);
+                dom.admin.play.removeClass("fa-play");
+                dom.admin.play.addClass("fa-pause");
             }
         });
         dom.admin.play.click(function(){
@@ -43,6 +45,8 @@ var playlist = function(dom, audio, timing) {
             if (data.length > trackNumber + 1) {
                 trackNumber++;
                 handle.play(data);
+                dom.admin.play.removeClass("fa-play");
+                dom.admin.play.addClass("fa-pause");
             }
         });
     };
