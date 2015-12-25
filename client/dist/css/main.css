@@ -474,3 +474,8 @@ main #admin .item .themeDot.black {
 main #admin .item .themeDot.yellow {
   background-color: yellow;
 }
+/* line 50, ../../src/scss/_admin.scss */
+main #admin .item .fa {
+  margin-right: 10px;
+  font-size: 20px;
+}

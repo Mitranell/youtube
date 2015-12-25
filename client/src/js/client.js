@@ -13,6 +13,7 @@ var timing = require('./timing.js'),
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
+    playlist.setNavigation(data);
     playlist.play(data);
     cycle.loop(data);
 };

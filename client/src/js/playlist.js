@@ -11,8 +11,8 @@ var playlist = function(dom, audio, timing) {
         startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
-            if (trackNumber > data.length - 1) console.log('klaar');
-            else handle.play(data);
+            if (trackNumber < data.length) handle.play(data);
+            else console.log('klaar');
         });
     };
     this.progress = function(data, callback) {
@@ -21,6 +21,30 @@ var playlist = function(dom, audio, timing) {
             percentage = (dif / dur) * 100;
         if (callback) callback(percentage);
     };
-
+    this.setNavigation = function(data) {
+        dom.admin.previous.click(function(){
+            if(trackNumber > 0) {
+                trackNumber--;
+                handle.play(data);
+            }
+        });
+        dom.admin.play.click(function(){
+            if (audio.isPlaying()) {
+                audio.pause();
+                dom.admin.play.removeClass("fa-pause");
+                dom.admin.play.addClass("fa-play");
+            } else {
+                audio.unpause();
+                dom.admin.play.removeClass("fa-play");
+                dom.admin.play.addClass("fa-pause");
+            }
+        });
+        dom.admin.next.click(function(){
+            if (data.length > trackNumber + 1) {
+                trackNumber++;
+                handle.play(data);
+            }
+        });
+    };
 };
 module.exports = playlist;

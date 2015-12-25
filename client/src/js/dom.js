@@ -74,6 +74,9 @@ dom.admin = {};
 dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
 };
+dom.admin.previous = $("#previous");
+dom.admin.play = $("#play");
+dom.admin.next = $("#next");
 
 $(document).keydown(function(e) {
     switch (e.which) {

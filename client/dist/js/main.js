@@ -10,7 +10,7 @@ var setSrc = function(url) {
 //Public audio object
 var audio = {};
 audio.play = function(src, ended) {
-    audio.pause();
+    dancer.pause();
     setSrc('../client/tracks/' + src);
     dancer.play();
 
@@ -21,6 +21,9 @@ audio.play = function(src, ended) {
 audio.pause = function() {
     dancer.pause();
 };
+audio.unpause = function() {
+    dancer.play();
+};
 audio.setVolume = function(vol) {
     dancer.setVolume(vol); //Volume from 0 to 1
 };
@@ -30,11 +33,8 @@ audio.getSpectrum = function() {
 audio.getTime = function() {
     return dancer.getTime();
 };
-audio.deltaTime = function(previous) {
-    return dancer.getTime() - previous > 0;
-};
 audio.isPlaying = function(count) {
-    return count < 10; //Not too low to be sure the audio is playing
+    return dancer.isPlaying();
 };
 module.exports = audio;
 
@@ -54,6 +54,7 @@ var timing = require('./timing.js'),
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
+    playlist.setNavigation(data);
     playlist.play(data);
     cycle.loop(data);
 };
@@ -163,6 +164,9 @@ dom.admin = {};
 dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
 };
+dom.admin.previous = $("#previous");
+dom.admin.play = $("#play");
+dom.admin.next = $("#next");
 
 $(document).keydown(function(e) {
     switch (e.which) {
@@ -192,8 +196,8 @@ var playlist = function(dom, audio, timing) {
         startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
-            if (trackNumber > data.length - 1) console.log('klaar');
-            else handle.play(data);
+            if (trackNumber < data.length) handle.play(data);
+            else console.log('klaar');
         });
     };
     this.progress = function(data, callback) {
@@ -202,7 +206,31 @@ var playlist = function(dom, audio, timing) {
             percentage = (dif / dur) * 100;
         if (callback) callback(percentage);
     };
-
+    this.setNavigation = function(data) {
+        dom.admin.previous.click(function(){
+            if(trackNumber > 0) {
+                trackNumber--;
+                handle.play(data);
+            }
+        });
+        dom.admin.play.click(function(){
+            if (audio.isPlaying()) {
+                audio.pause();
+                dom.admin.play.removeClass("fa-pause");
+                dom.admin.play.addClass("fa-play");
+            } else {
+                audio.unpause();
+                dom.admin.play.removeClass("fa-play");
+                dom.admin.play.addClass("fa-pause");
+            }
+        });
+        dom.admin.next.click(function(){
+            if (data.length > trackNumber + 1) {
+                trackNumber++;
+                handle.play(data);
+            }
+        });
+    };
 };
 module.exports = playlist;
 
@@ -358,13 +386,14 @@ var ui = function(dom) {
         var x = 0;
         var max = 0;
         var rotation = 0;
-        var range = 10; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
+        var range = 32; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
         var degrees = 5; //Ammount of degrees the skull is rotate left and right
 
         var spectrum = {};
         spectrum.data = spectrumData;
-        spectrum.size = spectrum.data.length / 6; //Only display the first 1/6th of the spectrum
-        spectrum.barWidth = (dom.canvasWrapperWidth() / spectrum.size);
+        spectrum.size = spectrum.data.length / 8; //Only display the first 1/8th of the spectrum
+        spectrum.barWidth = dom.canvasWrapperWidth() / spectrum.size;
+        x += spectrum.barWidth / 2; //center the spectrum
 
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
@@ -373,7 +402,7 @@ var ui = function(dom) {
               spectrum.barHeight = spectrum.data[i] * dom.canvasWrapperHeight();
               c.ctx.fillStyle = color.white;
               c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-              x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
+              x += spectrum.barWidth * 2; //Makes it display 1/16th of the spectrum (32 bars)
             }
 
             if (max < spectrum.data[i]) {
