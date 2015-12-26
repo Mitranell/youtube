@@ -80,12 +80,20 @@ var api = function(express, app) {
                             i.tracks = 1;
                             execute();
                         } else if (i.array == rows - 1) {
+                            track.list.sort(compare);
                             track.writeListFile(JSON.stringify(track.list), function() {
                                 res.send(track.list);
                             });
                         }
                     });
                 });
+            }
+            function compare(a,b) {
+                if (a.src < b.src)
+                    return -1;
+                if (a.src > b.src)
+                    return 1;
+                return 0;
             }
             execute();
         });
