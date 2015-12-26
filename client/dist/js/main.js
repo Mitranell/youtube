@@ -121,9 +121,15 @@ dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
 dom.kick = function(factor, rotation) {
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1 + factor,
-        rotation: rotation
+    TweenLite.set(elements.theater, {
+        transformPerspective : 600
+      });
+    TweenLite.to(elements.theater, 0.2, {
+        scale: 1 + factor
+    });
+    TweenLite.to(elements.theater, 0.2, {
+        rotationX: rotation,
+        transformOrigin: "50% 75%"
     });
 };
 dom.setClock = function(obj){
@@ -194,7 +200,6 @@ var playlist = function(dom, audio, timing) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        //startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
             if (trackNumber < data.length) handle.play(data);
@@ -392,7 +397,7 @@ var ui = function(dom) {
         var max = 0;
         var rotation = 0;
         var range = 16; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
-        var degrees = 5; //Ammount of degrees the skull is rotate left and right
+        var degrees = 5; //Ammount of degrees the skull rotates
 
         var spectrum = {};
         spectrum.data = spectrumData;

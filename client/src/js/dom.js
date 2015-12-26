@@ -31,9 +31,15 @@ dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
 dom.kick = function(factor, rotation) {
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1 + factor,
-        rotation: rotation
+    TweenLite.set(elements.theater, {
+        transformPerspective : 600
+      });
+    TweenLite.to(elements.theater, 0.2, {
+        scale: 1 + factor
+    });
+    TweenLite.to(elements.theater, 0.2, {
+        rotationX: rotation,
+        transformOrigin: "50% 75%"
     });
 };
 dom.setClock = function(obj){

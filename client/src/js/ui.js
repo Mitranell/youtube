@@ -16,7 +16,7 @@ var ui = function(dom) {
         var max = 0;
         var rotation = 0;
         var range = 16; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
-        var degrees = 5; //Ammount of degrees the skull is rotate left and right
+        var degrees = 5; //Ammount of degrees the skull rotates
 
         var spectrum = {};
         spectrum.data = spectrumData;

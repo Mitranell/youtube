@@ -8,7 +8,6 @@ var playlist = function(dom, audio, timing) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        //startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
             if (trackNumber < data.length) handle.play(data);
