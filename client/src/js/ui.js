@@ -15,8 +15,10 @@ var ui = function(dom) {
         var x = 0;
         var max = 0;
         var rotation = 0;
-        var range = 16; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
-        var degrees = 5; //Ammount of degrees the skull rotates
+        var range = dom.getRange();
+        var degrees = dom.getDegrees();
+        var speed = dom.getSpeed();
+        var perspective = dom.getPerspective();
 
         var spectrum = {};
         spectrum.data = spectrumData;
@@ -41,7 +43,7 @@ var ui = function(dom) {
             }
         }
 
-        dom.kick(max / 2, rotation);
+        dom.kick(max / 2, rotation, speed, perspective);
     };
 };
 module.exports = ui;

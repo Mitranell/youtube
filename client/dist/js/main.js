@@ -87,23 +87,8 @@ $(window).resize(function() {
 ui.resize();
 snow.resize();
 
-},{"./audio.js":1,"./dom.js":3,"./playlist.js":4,"./snow.js":5,"./timing.js":6,"./tool.js":7,"./ui.js":8}],3:[function(require,module,exports){
-canAnimateKick = true;
-
-//Dom element hooks
-var elements = {};
-elements.shirt = $('#shirt');
-elements.canvasWrapper = $('#canvasWrapper');
-elements.canvas = $('#canvas');
-elements.theater = $('#theater');
-elements.skull = $('#skull');
-elements.logo = $('#logo');
-elements.clock = {};
-elements.clock.hours = $('#hours');
-elements.clock.minutes = $('#minutes');
-elements.clock.seconds = $('#seconds');
-elements.trackInfo = $('#trackInfo');
-elements.progress = $('#progress');
+},{"./audio.js":1,"./dom.js":3,"./playlist.js":5,"./snow.js":6,"./timing.js":7,"./tool.js":8,"./ui.js":9}],3:[function(require,module,exports){
+var elements = require('./elements.js');
 
 elements.admin = {};
 elements.admin.div = $('#admin');
@@ -112,6 +97,7 @@ elements.admin.themeDots.click(function(div){
     var i = $(this).index();
     dom.changeTheme(i);
 });
+
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -120,16 +106,16 @@ dom.canvasWrapperWidth = function(){
 dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
-dom.kick = function(factor, rotation) {
+dom.kick = function(factor, rotation, speed, perspective) {
     TweenLite.set(elements.theater, {
-        transformPerspective : 600
+        transformPerspective : perspective
       });
-    TweenLite.to(elements.theater, 0.2, {
+    TweenLite.to(elements.theater, speed, {
         scale: 1 + factor
     });
-    TweenLite.to(elements.theater, 0.2, {
+    TweenLite.to(elements.theater, speed, {
         rotationX: rotation,
-        transformOrigin: "50% 75%"
+        transformOrigin: "50% 75%" //Location: upper lip = where spine is attached to head
     });
 };
 dom.setClock = function(obj){
@@ -145,6 +131,18 @@ dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
         width: percentage + '%'
     });
+};
+dom.getRange = function() {
+    return elements.range.slider("value");
+};
+dom.getDegrees = function() {
+    return elements.degrees.slider("value");
+};
+dom.getSpeed = function() {
+    return elements.speed.slider("value");
+};
+dom.getPerspective = function() {
+    return elements.perspective.slider("value");
 };
 
 dom.themes = [
@@ -189,7 +187,97 @@ $(document).keydown(function(e) {
 
 module.exports = dom;
 
-},{}],4:[function(require,module,exports){
+},{"./elements.js":4}],4:[function(require,module,exports){
+//Dom element hooks
+var elements = {};
+elements.shirt = $('#shirt');
+elements.canvasWrapper = $('#canvasWrapper');
+elements.canvas = $('#canvas');
+elements.theater = $('#theater');
+elements.skull = $('#skull');
+elements.logo = $('#logo');
+elements.clock = {};
+elements.clock.hours = $('#hours');
+elements.clock.minutes = $('#minutes');
+elements.clock.seconds = $('#seconds');
+elements.trackInfo = $('#trackInfo');
+elements.progress = $('#progress');
+elements.range = $("#range");
+elements.range.value = $("#rangeValue");
+elements.degrees = $("#degrees");
+elements.degrees.value = $("#degreesValue");
+elements.speed = $("#speed");
+elements.speed.value = $("#speedValue");
+elements.perspective = $("#perspective");
+elements.perspective.value = $("#perspectiveValue");
+
+//Range of bars (max 512) who determine the rotation, bars above range is all full to the right
+elements.range.slider({
+    range: 'min',
+    min: 1,
+    max: 512,
+    value: 10,
+    slide: function(event, ui) {
+        elements.range.value.val(ui.value);
+    }
+});
+elements.range.value.val(elements.range.slider("value")); //Initialize
+
+//Ammount of degrees the skull rotates
+elements.degrees.slider({
+    range: 'min',
+    min: 1,
+    max: 360,
+    value: 5,
+    slide: function(event, ui) {
+        elements.degrees.value.val(ui.value);
+    }
+});
+elements.degrees.value.val(elements.degrees.slider("value")); //Initialize
+
+elements.speed.slider({
+    range: 'min',
+    min: 0.01,
+    max: 1,
+    value: 0.2,
+    step: 0.01,
+    slide: function(event, ui) {
+        elements.speed.value.val(ui.value);
+    }
+});
+elements.speed.value.val(elements.speed.slider("value")); //Initialize
+
+elements.perspective.slider({
+    range: 'min',
+    min: 1,
+    max: 1000,
+    value: 500,
+    slide: function(event, ui) {
+        elements.perspective.value.val(ui.value);
+    }
+});
+elements.perspective.value.val(elements.perspective.slider("value")); //Initialize
+
+//Change slider when input is changed
+elements.range.value.change(function(){
+    elements.range.slider("value", $(this).val());
+});
+//Change slider when input is changed
+elements.degrees.value.change(function(){
+    elements.degrees.slider("value", $(this).val());
+});
+//Change slider when input is changed
+elements.speed.value.change(function(){
+    elements.speed.slider("value", $(this).val());
+});
+//Change slider when input is changed
+elements.perspective.value.change(function(){
+    elements.perspective.slider("value", $(this).val());
+});
+
+module.exports = elements;
+
+},{}],5:[function(require,module,exports){
 var playlist = function(dom, audio, timing) {
 
     var trackNumber = 0;
@@ -244,7 +332,7 @@ var playlist = function(dom, audio, timing) {
 };
 module.exports = playlist;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var snow = function(dom, tool) {
     var c = {};
     c.c = document.getElementById("snowCanvas");
@@ -319,7 +407,7 @@ var snow = function(dom, tool) {
 };
 module.exports = snow;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // Public timing object
 var timing = {};
 timing.deadline = '2016-01-01 00:00'; //00:00 is important for timezone
@@ -357,7 +445,7 @@ timing.clock = function(callback) {
 
 module.exports = timing;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var tool = {};
 tool.getTracklist = function(callback) {
     $.ajax({
@@ -378,7 +466,7 @@ tool.get.wh = function() {
 
 module.exports = tool;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var color = {};
 color.bg = '#1e2230';
 color.blue = '#26477d';
@@ -396,8 +484,10 @@ var ui = function(dom) {
         var x = 0;
         var max = 0;
         var rotation = 0;
-        var range = 16; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
-        var degrees = 5; //Ammount of degrees the skull rotates
+        var range = dom.getRange();
+        var degrees = dom.getDegrees();
+        var speed = dom.getSpeed();
+        var perspective = dom.getPerspective();
 
         var spectrum = {};
         spectrum.data = spectrumData;
@@ -422,7 +512,7 @@ var ui = function(dom) {
             }
         }
 
-        dom.kick(max / 2, rotation);
+        dom.kick(max / 2, rotation, speed, perspective);
     };
 };
 module.exports = ui;

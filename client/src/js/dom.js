@@ -1,19 +1,4 @@
-canAnimateKick = true;
-
-//Dom element hooks
-var elements = {};
-elements.shirt = $('#shirt');
-elements.canvasWrapper = $('#canvasWrapper');
-elements.canvas = $('#canvas');
-elements.theater = $('#theater');
-elements.skull = $('#skull');
-elements.logo = $('#logo');
-elements.clock = {};
-elements.clock.hours = $('#hours');
-elements.clock.minutes = $('#minutes');
-elements.clock.seconds = $('#seconds');
-elements.trackInfo = $('#trackInfo');
-elements.progress = $('#progress');
+var elements = require('./elements.js');
 
 elements.admin = {};
 elements.admin.div = $('#admin');
@@ -22,6 +7,7 @@ elements.admin.themeDots.click(function(div){
     var i = $(this).index();
     dom.changeTheme(i);
 });
+
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -30,16 +16,16 @@ dom.canvasWrapperWidth = function(){
 dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
-dom.kick = function(factor, rotation) {
+dom.kick = function(factor, rotation, speed, perspective) {
     TweenLite.set(elements.theater, {
-        transformPerspective : 600
+        transformPerspective : perspective
       });
-    TweenLite.to(elements.theater, 0.2, {
+    TweenLite.to(elements.theater, speed, {
         scale: 1 + factor
     });
-    TweenLite.to(elements.theater, 0.2, {
+    TweenLite.to(elements.theater, speed, {
         rotationX: rotation,
-        transformOrigin: "50% 75%"
+        transformOrigin: "50% 75%" //Location: upper lip = where spine is attached to head
     });
 };
 dom.setClock = function(obj){
@@ -55,6 +41,18 @@ dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
         width: percentage + '%'
     });
+};
+dom.getRange = function() {
+    return elements.range.slider("value");
+};
+dom.getDegrees = function() {
+    return elements.degrees.slider("value");
+};
+dom.getSpeed = function() {
+    return elements.speed.slider("value");
+};
+dom.getPerspective = function() {
+    return elements.perspective.slider("value");
 };
 
 dom.themes = [

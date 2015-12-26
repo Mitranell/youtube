@@ -48,8 +48,16 @@
             }
         }
         .fa{
-          margin-right: 10px;
-          font-size: 20px;
+            padding-right: 10px;
+            font-size: 20px;
         }
+        .slider{
+            float:right;
+            width: 180px;
+        }
+    }
+    input{
+        background: white;
+        width: 50px;
     }
 }

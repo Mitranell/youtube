@@ -491,6 +491,16 @@ main #admin .item .themeDot.yellow {
 }
 /* line 50, ../../src/scss/_admin.scss */
 main #admin .item .fa {
-  margin-right: 10px;
+  padding-right: 10px;
   font-size: 20px;
+}
+/* line 54, ../../src/scss/_admin.scss */
+main #admin .item .slider {
+  float: right;
+  width: 180px;
+}
+/* line 59, ../../src/scss/_admin.scss */
+main #admin input {
+  background: white;
+  width: 50px;
 }
