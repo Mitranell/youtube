@@ -194,7 +194,7 @@ var playlist = function(dom, audio, timing) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        startMs = timing.getCurMs();
+        //startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
             if (trackNumber < data.length) handle.play(data);
@@ -203,8 +203,8 @@ var playlist = function(dom, audio, timing) {
     };
     this.progress = function(data, callback) {
         var dur = data[trackNumber].duration,
-            dif = timing.getCurMs() - startMs,
-            percentage = (dif / dur) * 100;
+            cur = audio.getTime() * 1000, //Seconds to miliseconds
+            percentage = (cur / dur) * 100;
         if (callback) callback(percentage);
     };
     this.setNavigation = function(data) {
@@ -212,6 +212,8 @@ var playlist = function(dom, audio, timing) {
             if(trackNumber > 0) {
                 trackNumber--;
                 handle.play(data);
+                dom.admin.play.removeClass("fa-play");
+                dom.admin.play.addClass("fa-pause");
             }
         });
         dom.admin.play.click(function(){
@@ -229,6 +231,8 @@ var playlist = function(dom, audio, timing) {
             if (data.length > trackNumber + 1) {
                 trackNumber++;
                 handle.play(data);
+                dom.admin.play.removeClass("fa-play");
+                dom.admin.play.addClass("fa-pause");
             }
         });
     };
