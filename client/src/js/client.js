@@ -26,6 +26,9 @@ cycle.loop = function(data) {
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
+    timing.finalCountdown(function() {
+        dom.setFinalCountdown();
+    });
     playlist.progress(data, function(percentage){
         dom.setProgressBar(percentage);
     });

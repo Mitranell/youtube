@@ -1,5 +1,9 @@
 var elements = require('./elements.js');
 
+elements.final.click(function() {
+    dom.setFinalCountdown();
+});
+
 elements.admin = {};
 elements.admin.div = $('#admin');
 elements.admin.themeDots = elements.admin.div.find('.themeDot');
@@ -40,6 +44,17 @@ dom.setTrackInfo = function(title,name){
 dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
         width: percentage + '%'
+    });
+};
+dom.setFinalCountdown = function(){ //Needs a lot of adjustment
+    TweenLite.to([elements.canvasWrapper, elements.canvas], 1, {
+        top: '-200%'
+    });
+    TweenLite.to(elements.trackInfo, 1, {
+        left: '-100%'
+    });
+    TweenLite.to(elements.clock.div, 1, {
+        right: '50%',
     });
 };
 dom.getRange = function() {
@@ -99,6 +114,9 @@ $(document).keydown(function(e) {
             break;
         case 52: // 4
             dom.changeTheme(3);
+            break;
+        case 70: // f
+            dom.setFinalCountdown();
             break;
 
         default:

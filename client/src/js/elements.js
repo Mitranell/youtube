@@ -7,19 +7,21 @@ elements.theater = $('#theater');
 elements.skull = $('#skull');
 elements.logo = $('#logo');
 elements.clock = {};
+elements.clock.div = $('#clock');
 elements.clock.hours = $('#hours');
 elements.clock.minutes = $('#minutes');
 elements.clock.seconds = $('#seconds');
 elements.trackInfo = $('#trackInfo');
 elements.progress = $('#progress');
-elements.range = $("#range");
-elements.range.value = $("#rangeValue");
-elements.degrees = $("#degrees");
-elements.degrees.value = $("#degreesValue");
-elements.speed = $("#speed");
-elements.speed.value = $("#speedValue");
-elements.perspective = $("#perspective");
-elements.perspective.value = $("#perspectiveValue");
+elements.range = $('#range');
+elements.range.value = $('#rangeValue');
+elements.degrees = $('#degrees');
+elements.degrees.value = $('#degreesValue');
+elements.speed = $('#speed');
+elements.speed.value = $('#speedValue');
+elements.perspective = $('#perspective');
+elements.perspective.value = $('#perspectiveValue');
+elements.final = $('#final');
 
 //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
 elements.range.slider({
@@ -31,7 +33,7 @@ elements.range.slider({
         elements.range.value.val(ui.value);
     }
 });
-elements.range.value.val(elements.range.slider("value")); //Initialize
+elements.range.value.val(elements.range.slider('value')); //Initialize
 
 //Ammount of degrees the skull rotates
 elements.degrees.slider({
@@ -43,7 +45,7 @@ elements.degrees.slider({
         elements.degrees.value.val(ui.value);
     }
 });
-elements.degrees.value.val(elements.degrees.slider("value")); //Initialize
+elements.degrees.value.val(elements.degrees.slider('value')); //Initialize
 
 elements.speed.slider({
     range: 'min',
@@ -55,7 +57,7 @@ elements.speed.slider({
         elements.speed.value.val(ui.value);
     }
 });
-elements.speed.value.val(elements.speed.slider("value")); //Initialize
+elements.speed.value.val(elements.speed.slider('value')); //Initialize
 
 elements.perspective.slider({
     range: 'min',
@@ -66,23 +68,23 @@ elements.perspective.slider({
         elements.perspective.value.val(ui.value);
     }
 });
-elements.perspective.value.val(elements.perspective.slider("value")); //Initialize
+elements.perspective.value.val(elements.perspective.slider('value')); //Initialize
 
 //Change slider when input is changed
 elements.range.value.change(function(){
-    elements.range.slider("value", $(this).val());
+    elements.range.slider('value', $(this).val());
 });
 //Change slider when input is changed
 elements.degrees.value.change(function(){
-    elements.degrees.slider("value", $(this).val());
+    elements.degrees.slider('value', $(this).val());
 });
 //Change slider when input is changed
 elements.speed.value.change(function(){
-    elements.speed.slider("value", $(this).val());
+    elements.speed.slider('value', $(this).val());
 });
 //Change slider when input is changed
 elements.perspective.value.change(function(){
-    elements.perspective.slider("value", $(this).val());
+    elements.perspective.slider('value', $(this).val());
 });
 
 module.exports = elements;

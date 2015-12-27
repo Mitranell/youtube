@@ -67,6 +67,9 @@ cycle.loop = function(data) {
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
+    timing.finalCountdown(function() {
+        dom.setFinalCountdown();
+    });
     playlist.progress(data, function(percentage){
         dom.setProgressBar(percentage);
     });
@@ -108,6 +111,10 @@ snow.resize();
 },{"./audio.js":1,"./dom.js":3,"./playlist.js":5,"./snow.js":6,"./timing.js":7,"./tool.js":8,"./ui.js":9}],3:[function(require,module,exports){
 var elements = require('./elements.js');
 
+elements.final.click(function() {
+    dom.setFinalCountdown();
+});
+
 elements.admin = {};
 elements.admin.div = $('#admin');
 elements.admin.themeDots = elements.admin.div.find('.themeDot');
@@ -148,6 +155,17 @@ dom.setTrackInfo = function(title,name){
 dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
         width: percentage + '%'
+    });
+};
+dom.setFinalCountdown = function(){ //Needs a lot of adjustment
+    TweenLite.to([elements.canvasWrapper, elements.canvas], 1, {
+        top: '-200%'
+    });
+    TweenLite.to(elements.trackInfo, 1, {
+        left: '-100%'
+    });
+    TweenLite.to(elements.clock.div, 1, {
+        right: '50%',
     });
 };
 dom.getRange = function() {
@@ -208,6 +226,9 @@ $(document).keydown(function(e) {
         case 52: // 4
             dom.changeTheme(3);
             break;
+        case 70: // f
+            dom.setFinalCountdown();
+            break;
 
         default:
             return;
@@ -227,19 +248,21 @@ elements.theater = $('#theater');
 elements.skull = $('#skull');
 elements.logo = $('#logo');
 elements.clock = {};
+elements.clock.div = $('#clock');
 elements.clock.hours = $('#hours');
 elements.clock.minutes = $('#minutes');
 elements.clock.seconds = $('#seconds');
 elements.trackInfo = $('#trackInfo');
 elements.progress = $('#progress');
-elements.range = $("#range");
-elements.range.value = $("#rangeValue");
-elements.degrees = $("#degrees");
-elements.degrees.value = $("#degreesValue");
-elements.speed = $("#speed");
-elements.speed.value = $("#speedValue");
-elements.perspective = $("#perspective");
-elements.perspective.value = $("#perspectiveValue");
+elements.range = $('#range');
+elements.range.value = $('#rangeValue');
+elements.degrees = $('#degrees');
+elements.degrees.value = $('#degreesValue');
+elements.speed = $('#speed');
+elements.speed.value = $('#speedValue');
+elements.perspective = $('#perspective');
+elements.perspective.value = $('#perspectiveValue');
+elements.final = $('#final');
 
 //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
 elements.range.slider({
@@ -251,7 +274,7 @@ elements.range.slider({
         elements.range.value.val(ui.value);
     }
 });
-elements.range.value.val(elements.range.slider("value")); //Initialize
+elements.range.value.val(elements.range.slider('value')); //Initialize
 
 //Ammount of degrees the skull rotates
 elements.degrees.slider({
@@ -263,7 +286,7 @@ elements.degrees.slider({
         elements.degrees.value.val(ui.value);
     }
 });
-elements.degrees.value.val(elements.degrees.slider("value")); //Initialize
+elements.degrees.value.val(elements.degrees.slider('value')); //Initialize
 
 elements.speed.slider({
     range: 'min',
@@ -275,7 +298,7 @@ elements.speed.slider({
         elements.speed.value.val(ui.value);
     }
 });
-elements.speed.value.val(elements.speed.slider("value")); //Initialize
+elements.speed.value.val(elements.speed.slider('value')); //Initialize
 
 elements.perspective.slider({
     range: 'min',
@@ -286,23 +309,23 @@ elements.perspective.slider({
         elements.perspective.value.val(ui.value);
     }
 });
-elements.perspective.value.val(elements.perspective.slider("value")); //Initialize
+elements.perspective.value.val(elements.perspective.slider('value')); //Initialize
 
 //Change slider when input is changed
 elements.range.value.change(function(){
-    elements.range.slider("value", $(this).val());
+    elements.range.slider('value', $(this).val());
 });
 //Change slider when input is changed
 elements.degrees.value.change(function(){
-    elements.degrees.slider("value", $(this).val());
+    elements.degrees.slider('value', $(this).val());
 });
 //Change slider when input is changed
 elements.speed.value.change(function(){
-    elements.speed.slider("value", $(this).val());
+    elements.speed.slider('value', $(this).val());
 });
 //Change slider when input is changed
 elements.perspective.value.change(function(){
-    elements.perspective.slider("value", $(this).val());
+    elements.perspective.slider('value', $(this).val());
 });
 
 module.exports = elements;
@@ -480,6 +503,11 @@ timing.clock = function(callback) {
         obj.m = rem.minutes;
         obj.s = rem.seconds;
         if(callback) callback(obj);
+    }
+};
+timing.finalCountdown = function(callback) {
+    if (timing.getRemaining().minutes == 15) {
+        if(callback) callback();
     }
 };
 
