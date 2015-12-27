@@ -88,6 +88,18 @@ $(document).keydown(function(e) {
         case 65: // a
             dom.admin.open();
             break;
+        case 49: // 1
+            dom.changeTheme(0);
+            break;
+        case 50: // 2
+            dom.changeTheme(1);
+            break;
+        case 51: // 3
+            dom.changeTheme(2);
+            break;
+        case 52: // 4
+            dom.changeTheme(3);
+            break;
 
         default:
             return;

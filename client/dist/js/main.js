@@ -82,6 +82,12 @@ tool.getTracklist(function(data) {
             case 32: // spacebar
                 playlist.playCurrent(data);
                 break;
+            case 37: // left arrow
+                playlist.playPrevious(data);
+                break;
+            case 39: // right arrow
+                playlist.playNext(data);
+                break;
 
             default:
                 return;
@@ -189,6 +195,18 @@ $(document).keydown(function(e) {
     switch (e.which) {
         case 65: // a
             dom.admin.open();
+            break;
+        case 49: // 1
+            dom.changeTheme(0);
+            break;
+        case 50: // 2
+            dom.changeTheme(1);
+            break;
+        case 51: // 3
+            dom.changeTheme(2);
+            break;
+        case 52: // 4
+            dom.changeTheme(3);
             break;
 
         default:

@@ -41,6 +41,12 @@ tool.getTracklist(function(data) {
             case 32: // spacebar
                 playlist.playCurrent(data);
                 break;
+            case 37: // left arrow
+                playlist.playPrevious(data);
+                break;
+            case 39: // right arrow
+                playlist.playNext(data);
+                break;
 
             default:
                 return;
