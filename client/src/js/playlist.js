@@ -22,32 +22,42 @@ var playlist = function(dom, audio, timing) {
     };
     this.setNavigation = function(data) {
         dom.admin.previous.click(function(){
-            if(trackNumber > 0) {
-                trackNumber--;
-                handle.play(data);
-                dom.admin.play.removeClass("fa-play");
-                dom.admin.play.addClass("fa-pause");
-            }
+            handle.playPrevious(data);
         });
         dom.admin.play.click(function(){
-            if (audio.isPlaying()) {
-                audio.pause();
-                dom.admin.play.removeClass("fa-pause");
-                dom.admin.play.addClass("fa-play");
-            } else {
-                audio.unpause();
-                dom.admin.play.removeClass("fa-play");
-                dom.admin.play.addClass("fa-pause");
-            }
+            handle.playCurrent(data);
         });
         dom.admin.next.click(function(){
-            if (data.length > trackNumber + 1) {
-                trackNumber++;
-                handle.play(data);
-                dom.admin.play.removeClass("fa-play");
-                dom.admin.play.addClass("fa-pause");
-            }
+            handle.playNext(data);
         });
     };
+    this.playPrevious = function (data) {
+        if(trackNumber > 0) {
+            trackNumber--;
+            handle.play(data);
+            dom.admin.play.removeClass("fa-play");
+            dom.admin.play.addClass("fa-pause");
+        }
+    };
+    this.playCurrent = function (data) {
+        if (audio.isPlaying()) {
+            audio.pause();
+            dom.admin.play.removeClass("fa-pause");
+            dom.admin.play.addClass("fa-play");
+        } else {
+            audio.unpause();
+            dom.admin.play.removeClass("fa-play");
+            dom.admin.play.addClass("fa-pause");
+        }
+    };
+    this.playNext = function (data) {
+        if (data.length > trackNumber + 1) {
+            trackNumber++;
+            handle.play(data);
+            dom.admin.play.removeClass("fa-play");
+            dom.admin.play.addClass("fa-pause");
+        }
+    };
 };
+
 module.exports = playlist;
