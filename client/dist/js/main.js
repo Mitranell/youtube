@@ -629,7 +629,7 @@ timing.clock = function(callback) {
     }
 };
 timing.finalCountdown = function(callback) {
-    if (timing.getRemainingMs() == 15*60*1000) {
+    if (timing.getRemainingMs() < 15*60*1000) {
         if(callback) callback();
     }
 };
