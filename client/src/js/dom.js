@@ -69,6 +69,20 @@ dom.getSpeed = function() {
 dom.getPerspective = function() {
     return elements.perspective.slider("value");
 };
+dom.startAnimation = function(callback) {
+    elements.leftEye.css('opacity', 0);
+    elements.rightEye.css('opacity', 0);
+    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 5, {
+        opacity: 0
+    });
+    TweenLite.to(elements.theater, 5, {
+        width: dom.canvasWrapperWidth()*2,
+        height: dom.canvasWrapperWidth()*2,
+        marginTop: dom.canvasWrapperWidth() / -1,
+        marginLeft: dom.canvasWrapperWidth() / -1,
+        onComplete: callback
+    });
+};
 
 dom.themes = [
     'red',

@@ -8,10 +8,12 @@ var playlist = function(dom, audio, timing) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        audio.play(track.src, function() {
-            trackNumber++;
-            if (trackNumber < data.length) handle.play(data);
-            else console.log('klaar');
+        dom.startAnimation(function(){
+            audio.play(track.src, function() {
+                trackNumber++;
+                if (trackNumber < data.length) handle.play(data);
+                else console.log('klaar');
+            });
         });
     };
     this.progress = function(data, callback) {

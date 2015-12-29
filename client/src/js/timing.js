@@ -33,7 +33,7 @@ timing.clock = function(callback) {
     }
 };
 timing.finalCountdown = function(callback) {
-    if (timing.getRemaining().minutes == 15) {
+    if (timing.getRemaining().total == 15*60*1000) {
         if(callback) callback();
     }
 };

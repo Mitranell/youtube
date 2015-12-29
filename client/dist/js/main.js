@@ -78,8 +78,6 @@ cycle.loop = function(data) {
 
 //Starting it all
 tool.getTracklist(function(data) {
-    cycle.start(data);
-
     $(document).keydown(function(e) {
         switch (e.which) {
             case 32: // spacebar
@@ -97,6 +95,8 @@ tool.getTracklist(function(data) {
         }
         e.preventDefault();
     });
+
+    cycle.start(data);
 });
 
 
@@ -180,6 +180,20 @@ dom.getSpeed = function() {
 dom.getPerspective = function() {
     return elements.perspective.slider("value");
 };
+dom.startAnimation = function(callback) {
+    elements.leftEye.css('opacity', 0);
+    elements.rightEye.css('opacity', 0);
+    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 5, {
+        opacity: 0
+    });
+    TweenLite.to(elements.theater, 5, {
+        width: dom.canvasWrapperWidth()*2,
+        height: dom.canvasWrapperWidth()*2,
+        marginTop: dom.canvasWrapperWidth() / -1,
+        marginLeft: dom.canvasWrapperWidth() / -1,
+        onComplete: callback
+    });
+};
 
 dom.themes = [
     'red',
@@ -246,6 +260,10 @@ elements.canvasWrapper = $('#canvasWrapper');
 elements.canvas = $('#canvas');
 elements.theater = $('#theater');
 elements.skull = $('#skull');
+elements.detailing = $('#detailing');
+elements.teeth = $('#teeth');
+elements.leftEye = $('#leftEye');
+elements.rightEye = $('#rightEye');
 elements.logo = $('#logo');
 elements.clock = {};
 elements.clock.div = $('#clock');
@@ -341,10 +359,12 @@ var playlist = function(dom, audio, timing) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        audio.play(track.src, function() {
-            trackNumber++;
-            if (trackNumber < data.length) handle.play(data);
-            else console.log('klaar');
+        dom.startAnimation(function(){
+            audio.play(track.src, function() {
+                trackNumber++;
+                if (trackNumber < data.length) handle.play(data);
+                else console.log('klaar');
+            });
         });
     };
     this.progress = function(data, callback) {
@@ -506,7 +526,7 @@ timing.clock = function(callback) {
     }
 };
 timing.finalCountdown = function(callback) {
-    if (timing.getRemaining().minutes == 15) {
+    if (timing.getRemaining().total == 15*60*1000) {
         if(callback) callback();
     }
 };

@@ -37,8 +37,6 @@ cycle.loop = function(data) {
 
 //Starting it all
 tool.getTracklist(function(data) {
-    cycle.start(data);
-
     $(document).keydown(function(e) {
         switch (e.which) {
             case 32: // spacebar
@@ -56,6 +54,8 @@ tool.getTracklist(function(data) {
         }
         e.preventDefault();
     });
+
+    cycle.start(data);
 });
 
 
