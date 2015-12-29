@@ -2,6 +2,7 @@ var playlist = function(dom, audio, timing) {
 
     var trackNumber = 0;
     var startMs = 0;
+    var ended = false;
 
     var handle = this;
     this.play = function(data) {
@@ -12,11 +13,16 @@ var playlist = function(dom, audio, timing) {
             audio.play(track.src, function() {
                 trackNumber++;
                 if (trackNumber < data.length) handle.play(data);
-                else console.log('klaar');
+                else handle.end();
             });
         });
     };
+    this.end = function(){
+        ended = true;
+        console.log('klaar');
+    };
     this.progress = function(data, callback) {
+        if(ended) return false;
         var dur = data[trackNumber].duration,
             cur = audio.getTime() * 1000, //Seconds to miliseconds
             percentage = (cur / dur) * 100;

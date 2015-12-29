@@ -13,10 +13,14 @@ audio.play = function(src, ended) {
     dancer.pause();
     setSrc('../client/tracks/' + src);
     dancer.play();
+    console.log(dancer);
 
     dancer.source.onended = function() {
         if(ended) ended();
     };
+};
+audio.getCurrentTime = function(){
+    if(dancer.source) return dancer.source.currentTime *1000; //To ms
 };
 audio.pause = function() {
     dancer.pause();
@@ -162,11 +166,19 @@ dom.setFinalCountdown = function(){ //Needs a lot of adjustment
         top: '-200%'
     });
     TweenLite.to(elements.trackInfo, 1, {
-        left: '-100%'
+        opacity: 0
+    });
+    TweenLite.to(elements.bar, 1, {
+        height: '100%'
     });
     TweenLite.to(elements.clock.div, 1, {
-        right: '50%',
+        width: '100%',
+        right: 0
     });
+    TweenLite.to(elements.progress, 0.5, {
+        opacity: 0
+    });
+    dom.changeTheme(1);
 };
 dom.getRange = function() {
     return elements.range.slider("value");
@@ -265,6 +277,9 @@ elements.teeth = $('#teeth');
 elements.leftEye = $('#leftEye');
 elements.rightEye = $('#rightEye');
 elements.logo = $('#logo');
+
+elements.bar = $('#bar');
+
 elements.clock = {};
 elements.clock.div = $('#clock');
 elements.clock.hours = $('#hours');
@@ -353,6 +368,7 @@ var playlist = function(dom, audio, timing) {
 
     var trackNumber = 0;
     var startMs = 0;
+    var ended = false;
 
     var handle = this;
     this.play = function(data) {
@@ -363,11 +379,16 @@ var playlist = function(dom, audio, timing) {
             audio.play(track.src, function() {
                 trackNumber++;
                 if (trackNumber < data.length) handle.play(data);
-                else console.log('klaar');
+                else handle.end();
             });
         });
     };
+    this.end = function(){
+        ended = true;
+        console.log('klaar');
+    };
     this.progress = function(data, callback) {
+        if(ended) return false;
         var dur = data[trackNumber].duration,
             cur = audio.getTime() * 1000, //Seconds to miliseconds
             percentage = (cur / dur) * 100;
