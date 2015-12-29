@@ -7,6 +7,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="client/dist/css/main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 </head>
 
 <body>
@@ -88,10 +89,41 @@
                 <div class="themeDot black"></div>
                 <div class="themeDot yellow"></div>
             </div>
+            <div class="title">Navigation</div>
+            <div class="item">
+                <i id="previous" class="fa fa-backward"></i>
+                <i id="play" class="fa fa-pause"></i>
+                <i id="next" class="fa fa-forward"></i>
+            </div>
+            <div class="title">Range</div>
+            <div class="item">
+                <input id="rangeValue" type="number" min="1" max="512">
+                <div id="range" class="slider"></div>
+            </div>
+            <div class="title">Degrees</div>
+            <div class="item">
+                <input id="degreesValue" type="number" min="1" max="360">
+                <div id="degrees" class="slider"></div>
+            </div>
+            <div class="title">Speed</div>
+            <div class="item">
+                <input id="speedValue" type="number" min="1" max="0.01" step="0.01">
+                <div id="speed" class="slider"></div>
+            </div>
+            <div class="title">Perspective</div>
+            <div class="item">
+                <input id="perspectiveValue" type="number" min="1" max="1000">
+                <div id="perspective" class="slider"></div>
+            </div>
+            <div class="title">Final countdown</div>
+            <div class="item">
+                <button id="final">Final countdown</button>
+            </div>
         </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dancer.js/0.4.0/dancer.min.js"></script>
 

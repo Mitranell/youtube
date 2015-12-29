@@ -32,5 +32,10 @@ timing.clock = function(callback) {
         if(callback) callback(obj);
     }
 };
+timing.finalCountdown = function(callback) {
+    if (timing.getRemaining().minutes == 15) {
+        if(callback) callback();
+    }
+};
 
 module.exports = timing;

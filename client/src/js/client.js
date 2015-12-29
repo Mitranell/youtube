@@ -13,6 +13,7 @@ var timing = require('./timing.js'),
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
+    playlist.setNavigation(data);
     playlist.play(data);
     cycle.loop(data);
 };
@@ -25,6 +26,9 @@ cycle.loop = function(data) {
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
+    timing.finalCountdown(function() {
+        dom.setFinalCountdown();
+    });
     playlist.progress(data, function(percentage){
         dom.setProgressBar(percentage);
     });
@@ -34,6 +38,24 @@ cycle.loop = function(data) {
 //Starting it all
 tool.getTracklist(function(data) {
     cycle.start(data);
+
+    $(document).keydown(function(e) {
+        switch (e.which) {
+            case 32: // spacebar
+                playlist.playCurrent(data);
+                break;
+            case 37: // left arrow
+                playlist.playPrevious(data);
+                break;
+            case 39: // right arrow
+                playlist.playNext(data);
+                break;
+
+            default:
+                return;
+        }
+        e.preventDefault();
+    });
 });
 
 

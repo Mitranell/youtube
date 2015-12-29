@@ -10,7 +10,7 @@ var setSrc = function(url) {
 //Public audio object
 var audio = {};
 audio.play = function(src, ended) {
-    audio.pause();
+    dancer.pause();
     setSrc('../client/tracks/' + src);
     dancer.play();
     console.log(dancer);
@@ -25,6 +25,9 @@ audio.getCurrentTime = function(){
 audio.pause = function() {
     dancer.pause();
 };
+audio.unpause = function() {
+    dancer.play();
+};
 audio.setVolume = function(vol) {
     dancer.setVolume(vol); //Volume from 0 to 1
 };
@@ -34,11 +37,8 @@ audio.getSpectrum = function() {
 audio.getTime = function() {
     return dancer.getTime();
 };
-audio.deltaTime = function(previous) {
-    return dancer.getTime() - previous > 0;
-};
 audio.isPlaying = function(count) {
-    return count < 10; //Not too low to be sure the audio is playing
+    return dancer.isPlaying();
 };
 module.exports = audio;
 
@@ -58,6 +58,7 @@ var timing = require('./timing.js'),
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
+    playlist.setNavigation(data);
     playlist.play(data);
     cycle.loop(data);
 };
@@ -70,6 +71,9 @@ cycle.loop = function(data) {
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
+    timing.finalCountdown(function() {
+        dom.setFinalCountdown();
+    });
     playlist.progress(data, function(percentage){
         dom.setProgressBar(percentage);
     });
@@ -79,6 +83,24 @@ cycle.loop = function(data) {
 //Starting it all
 tool.getTracklist(function(data) {
     cycle.start(data);
+
+    $(document).keydown(function(e) {
+        switch (e.which) {
+            case 32: // spacebar
+                playlist.playCurrent(data);
+                break;
+            case 37: // left arrow
+                playlist.playPrevious(data);
+                break;
+            case 39: // right arrow
+                playlist.playNext(data);
+                break;
+
+            default:
+                return;
+        }
+        e.preventDefault();
+    });
 });
 
 
@@ -90,23 +112,12 @@ $(window).resize(function() {
 ui.resize();
 snow.resize();
 
-},{"./audio.js":1,"./dom.js":3,"./playlist.js":4,"./snow.js":5,"./timing.js":6,"./tool.js":7,"./ui.js":8}],3:[function(require,module,exports){
-canAnimateKick = true;
+},{"./audio.js":1,"./dom.js":3,"./playlist.js":5,"./snow.js":6,"./timing.js":7,"./tool.js":8,"./ui.js":9}],3:[function(require,module,exports){
+var elements = require('./elements.js');
 
-//Dom element hooks
-var elements = {};
-elements.shirt = $('#shirt');
-elements.canvasWrapper = $('#canvasWrapper');
-elements.canvas = $('#canvas');
-elements.theater = $('#theater');
-elements.skull = $('#skull');
-elements.logo = $('#logo');
-elements.clock = {};
-elements.clock.hours = $('#hours');
-elements.clock.minutes = $('#minutes');
-elements.clock.seconds = $('#seconds');
-elements.trackInfo = $('#trackInfo');
-elements.progress = $('#progress');
+elements.final.click(function() {
+    dom.setFinalCountdown();
+});
 
 elements.admin = {};
 elements.admin.div = $('#admin');
@@ -115,6 +126,7 @@ elements.admin.themeDots.click(function(div){
     var i = $(this).index();
     dom.changeTheme(i);
 });
+
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -123,10 +135,16 @@ dom.canvasWrapperWidth = function(){
 dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
-dom.kick = function(factor, rotation) {
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1 + factor,
-        rotation: rotation
+dom.kick = function(factor, rotation, speed, perspective) {
+    TweenLite.set(elements.theater, {
+        transformPerspective : perspective
+      });
+    TweenLite.to(elements.theater, speed, {
+        scale: 1 + factor
+    });
+    TweenLite.to(elements.theater, speed, {
+        rotationX: rotation,
+        transformOrigin: "50% 75%" //Location: upper lip = where spine is attached to head
     });
 };
 dom.setClock = function(obj){
@@ -142,6 +160,29 @@ dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
         width: percentage + '%'
     });
+};
+dom.setFinalCountdown = function(){ //Needs a lot of adjustment
+    TweenLite.to([elements.canvasWrapper, elements.canvas], 1, {
+        top: '-200%'
+    });
+    TweenLite.to(elements.trackInfo, 1, {
+        left: '-100%'
+    });
+    TweenLite.to(elements.clock.div, 1, {
+        right: '50%',
+    });
+};
+dom.getRange = function() {
+    return elements.range.slider("value");
+};
+dom.getDegrees = function() {
+    return elements.degrees.slider("value");
+};
+dom.getSpeed = function() {
+    return elements.speed.slider("value");
+};
+dom.getPerspective = function() {
+    return elements.perspective.slider("value");
 };
 
 dom.themes = [
@@ -161,17 +202,36 @@ dom.changeTheme = function(i){
     setTheme(elements.shirt);
     setTheme(elements.canvas);
     setTheme(elements.logo);
+    setTheme(elements.progress);
 };
 
 dom.admin = {};
 dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
 };
+dom.admin.previous = $("#previous");
+dom.admin.play = $("#play");
+dom.admin.next = $("#next");
 
 $(document).keydown(function(e) {
     switch (e.which) {
         case 65: // a
             dom.admin.open();
+            break;
+        case 49: // 1
+            dom.changeTheme(0);
+            break;
+        case 50: // 2
+            dom.changeTheme(1);
+            break;
+        case 51: // 3
+            dom.changeTheme(2);
+            break;
+        case 52: // 4
+            dom.changeTheme(3);
+            break;
+        case 70: // f
+            dom.setFinalCountdown();
             break;
 
         default:
@@ -182,7 +242,99 @@ $(document).keydown(function(e) {
 
 module.exports = dom;
 
-},{}],4:[function(require,module,exports){
+},{"./elements.js":4}],4:[function(require,module,exports){
+//Dom element hooks
+var elements = {};
+elements.shirt = $('#shirt');
+elements.canvasWrapper = $('#canvasWrapper');
+elements.canvas = $('#canvas');
+elements.theater = $('#theater');
+elements.skull = $('#skull');
+elements.logo = $('#logo');
+elements.clock = {};
+elements.clock.div = $('#clock');
+elements.clock.hours = $('#hours');
+elements.clock.minutes = $('#minutes');
+elements.clock.seconds = $('#seconds');
+elements.trackInfo = $('#trackInfo');
+elements.progress = $('#progress');
+elements.range = $('#range');
+elements.range.value = $('#rangeValue');
+elements.degrees = $('#degrees');
+elements.degrees.value = $('#degreesValue');
+elements.speed = $('#speed');
+elements.speed.value = $('#speedValue');
+elements.perspective = $('#perspective');
+elements.perspective.value = $('#perspectiveValue');
+elements.final = $('#final');
+
+//Range of bars (max 512) who determine the rotation, bars above range is all full to the right
+elements.range.slider({
+    range: 'min',
+    min: 1,
+    max: 512,
+    value: 10,
+    slide: function(event, ui) {
+        elements.range.value.val(ui.value);
+    }
+});
+elements.range.value.val(elements.range.slider('value')); //Initialize
+
+//Ammount of degrees the skull rotates
+elements.degrees.slider({
+    range: 'min',
+    min: 1,
+    max: 360,
+    value: 5,
+    slide: function(event, ui) {
+        elements.degrees.value.val(ui.value);
+    }
+});
+elements.degrees.value.val(elements.degrees.slider('value')); //Initialize
+
+elements.speed.slider({
+    range: 'min',
+    min: 0.01,
+    max: 1,
+    value: 0.2,
+    step: 0.01,
+    slide: function(event, ui) {
+        elements.speed.value.val(ui.value);
+    }
+});
+elements.speed.value.val(elements.speed.slider('value')); //Initialize
+
+elements.perspective.slider({
+    range: 'min',
+    min: 1,
+    max: 1000,
+    value: 500,
+    slide: function(event, ui) {
+        elements.perspective.value.val(ui.value);
+    }
+});
+elements.perspective.value.val(elements.perspective.slider('value')); //Initialize
+
+//Change slider when input is changed
+elements.range.value.change(function(){
+    elements.range.slider('value', $(this).val());
+});
+//Change slider when input is changed
+elements.degrees.value.change(function(){
+    elements.degrees.slider('value', $(this).val());
+});
+//Change slider when input is changed
+elements.speed.value.change(function(){
+    elements.speed.slider('value', $(this).val());
+});
+//Change slider when input is changed
+elements.perspective.value.change(function(){
+    elements.perspective.slider('value', $(this).val());
+});
+
+module.exports = elements;
+
+},{}],5:[function(require,module,exports){
 var playlist = function(dom, audio, timing) {
 
     var trackNumber = 0;
@@ -194,11 +346,15 @@ var playlist = function(dom, audio, timing) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        startMs = timing.getCurMs();
         audio.play(track.src, function() {
             trackNumber++;
+<<<<<<< HEAD
             if (trackNumber > data.length - 1) handle.end();
             else handle.play(data);
+=======
+            if (trackNumber < data.length) handle.play(data);
+            else console.log('klaar');
+>>>>>>> origin/master
         });
     };
     this.end = function(){
@@ -208,15 +364,58 @@ var playlist = function(dom, audio, timing) {
     this.progress = function(data, callback) {
         if(ended) return false;
         var dur = data[trackNumber].duration,
+<<<<<<< HEAD
             curTime = audio.getCurrentTime();
         var percentage = (curTime / dur) *100;
+=======
+            cur = audio.getTime() * 1000, //Seconds to miliseconds
+            percentage = (cur / dur) * 100;
+>>>>>>> origin/master
         if (callback) callback(percentage);
     };
-
+    this.setNavigation = function(data) {
+        dom.admin.previous.click(function(){
+            handle.playPrevious(data);
+        });
+        dom.admin.play.click(function(){
+            handle.playCurrent(data);
+        });
+        dom.admin.next.click(function(){
+            handle.playNext(data);
+        });
+    };
+    this.playPrevious = function (data) {
+        if(trackNumber > 0) {
+            trackNumber--;
+            handle.play(data);
+            dom.admin.play.removeClass("fa-play");
+            dom.admin.play.addClass("fa-pause");
+        }
+    };
+    this.playCurrent = function (data) {
+        if (audio.isPlaying()) {
+            audio.pause();
+            dom.admin.play.removeClass("fa-pause");
+            dom.admin.play.addClass("fa-play");
+        } else {
+            audio.unpause();
+            dom.admin.play.removeClass("fa-play");
+            dom.admin.play.addClass("fa-pause");
+        }
+    };
+    this.playNext = function (data) {
+        if (data.length > trackNumber + 1) {
+            trackNumber++;
+            handle.play(data);
+            dom.admin.play.removeClass("fa-play");
+            dom.admin.play.addClass("fa-pause");
+        }
+    };
 };
+
 module.exports = playlist;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var snow = function(dom, tool) {
     var c = {};
     c.c = document.getElementById("snowCanvas");
@@ -291,7 +490,7 @@ var snow = function(dom, tool) {
 };
 module.exports = snow;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // Public timing object
 var timing = {};
 timing.deadline = '2016-01-01 00:00'; //00:00 is important for timezone
@@ -326,10 +525,15 @@ timing.clock = function(callback) {
         if(callback) callback(obj);
     }
 };
+timing.finalCountdown = function(callback) {
+    if (timing.getRemaining().minutes == 15) {
+        if(callback) callback();
+    }
+};
 
 module.exports = timing;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var tool = {};
 tool.getTracklist = function(callback) {
     $.ajax({
@@ -350,7 +554,7 @@ tool.get.wh = function() {
 
 module.exports = tool;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var color = {};
 color.bg = '#1e2230';
 color.blue = '#26477d';
@@ -368,13 +572,16 @@ var ui = function(dom) {
         var x = 0;
         var max = 0;
         var rotation = 0;
-        var range = 10; //Range of bars (max 512) who determine the rotation, bars above range is all full to the right
-        var degrees = 5; //Ammount of degrees the skull is rotate left and right
+        var range = dom.getRange();
+        var degrees = dom.getDegrees();
+        var speed = dom.getSpeed();
+        var perspective = dom.getPerspective();
 
         var spectrum = {};
         spectrum.data = spectrumData;
-        spectrum.size = spectrum.data.length / 6; //Only display the first 1/6th of the spectrum
-        spectrum.barWidth = (dom.canvasWrapperWidth() / spectrum.size);
+        spectrum.size = spectrum.data.length / 8; //Only display the first 1/8th of the spectrum
+        spectrum.barWidth = dom.canvasWrapperWidth() / spectrum.size;
+        x += spectrum.barWidth / 2; //center the spectrum
 
         //Draw frequencyBars to canvas
         c.ctx.clearRect(0, 0, dom.canvasWrapperWidth(), dom.canvasWrapperHeight());
@@ -383,7 +590,7 @@ var ui = function(dom) {
               spectrum.barHeight = spectrum.data[i] * dom.canvasWrapperHeight();
               c.ctx.fillStyle = color.white;
               c.ctx.fillRect(x, dom.canvasWrapperHeight() / 2 - spectrum.barHeight / 2, spectrum.barWidth, spectrum.barHeight);
-              x += spectrum.barWidth * 2; //Makes it display 1/12th of the spectrum
+              x += spectrum.barWidth * 2; //Makes it display 1/16th of the spectrum (32 bars)
             }
 
             if (max < spectrum.data[i]) {
@@ -393,7 +600,7 @@ var ui = function(dom) {
             }
         }
 
-        dom.kick(max / 2, rotation);
+        dom.kick(max / 2, rotation, speed, perspective);
     };
 };
 module.exports = ui;

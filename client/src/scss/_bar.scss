@@ -31,6 +31,17 @@
         height: 4px;
         left: 0;
         bottom: 0;
-        background-color: red;
+        &.red {
+            background-color: red;
+        }
+        &.blue {
+            background-color: blue;
+        }
+        &.black {
+            background-color: black;
+        }
+        &.yellow {
+            background-color: yellow;
+        }
     }
 }

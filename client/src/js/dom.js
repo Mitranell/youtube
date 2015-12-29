@@ -1,19 +1,8 @@
-canAnimateKick = true;
+var elements = require('./elements.js');
 
-//Dom element hooks
-var elements = {};
-elements.shirt = $('#shirt');
-elements.canvasWrapper = $('#canvasWrapper');
-elements.canvas = $('#canvas');
-elements.theater = $('#theater');
-elements.skull = $('#skull');
-elements.logo = $('#logo');
-elements.clock = {};
-elements.clock.hours = $('#hours');
-elements.clock.minutes = $('#minutes');
-elements.clock.seconds = $('#seconds');
-elements.trackInfo = $('#trackInfo');
-elements.progress = $('#progress');
+elements.final.click(function() {
+    dom.setFinalCountdown();
+});
 
 elements.admin = {};
 elements.admin.div = $('#admin');
@@ -22,6 +11,7 @@ elements.admin.themeDots.click(function(div){
     var i = $(this).index();
     dom.changeTheme(i);
 });
+
 //Public dom object
 var dom = {};
 dom.canvasWrapperWidth = function(){
@@ -30,10 +20,16 @@ dom.canvasWrapperWidth = function(){
 dom.canvasWrapperHeight = function(){
     return elements.canvasWrapper.height();
 };
-dom.kick = function(factor, rotation) {
-    TweenLite.to(elements.theater, 0.1, {
-        scale: 1 + factor,
-        rotation: rotation
+dom.kick = function(factor, rotation, speed, perspective) {
+    TweenLite.set(elements.theater, {
+        transformPerspective : perspective
+      });
+    TweenLite.to(elements.theater, speed, {
+        scale: 1 + factor
+    });
+    TweenLite.to(elements.theater, speed, {
+        rotationX: rotation,
+        transformOrigin: "50% 75%" //Location: upper lip = where spine is attached to head
     });
 };
 dom.setClock = function(obj){
@@ -49,6 +45,29 @@ dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
         width: percentage + '%'
     });
+};
+dom.setFinalCountdown = function(){ //Needs a lot of adjustment
+    TweenLite.to([elements.canvasWrapper, elements.canvas], 1, {
+        top: '-200%'
+    });
+    TweenLite.to(elements.trackInfo, 1, {
+        left: '-100%'
+    });
+    TweenLite.to(elements.clock.div, 1, {
+        right: '50%',
+    });
+};
+dom.getRange = function() {
+    return elements.range.slider("value");
+};
+dom.getDegrees = function() {
+    return elements.degrees.slider("value");
+};
+dom.getSpeed = function() {
+    return elements.speed.slider("value");
+};
+dom.getPerspective = function() {
+    return elements.perspective.slider("value");
 };
 
 dom.themes = [
@@ -68,17 +87,36 @@ dom.changeTheme = function(i){
     setTheme(elements.shirt);
     setTheme(elements.canvas);
     setTheme(elements.logo);
+    setTheme(elements.progress);
 };
 
 dom.admin = {};
 dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
 };
+dom.admin.previous = $("#previous");
+dom.admin.play = $("#play");
+dom.admin.next = $("#next");
 
 $(document).keydown(function(e) {
     switch (e.which) {
         case 65: // a
             dom.admin.open();
+            break;
+        case 49: // 1
+            dom.changeTheme(0);
+            break;
+        case 50: // 2
+            dom.changeTheme(1);
+            break;
+        case 51: // 3
+            dom.changeTheme(2);
+            break;
+        case 52: // 4
+            dom.changeTheme(3);
+            break;
+        case 70: // f
+            dom.setFinalCountdown();
             break;
 
         default:
