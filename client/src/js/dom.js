@@ -60,6 +60,10 @@ dom.setFinalCountdown = function(){ //Needs a lot of adjustment
         width: '100%',
         right: 0
     });
+    TweenLite.to(elements.progress, 0.5, {
+        opacity: 0
+    });
+    dom.changeTheme(1);
 };
 dom.getRange = function() {
     return elements.range.slider("value");
