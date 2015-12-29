@@ -209,10 +209,31 @@ dom.startAnimation = function(callback) {
         onComplete: callback
     });
 };
-dom.showNewTrack = function(callback){
-    if(callback) callback();
+dom.showNewTrack = function(genre, callback){
+    elements.clock.div.hide();
+    elements.progress.hide();
+    elements.bar.css({
+        zIndex: 100,
+        height: '100%'
+    });
+    elements.trackInfo.css('color', dom.themes[genre]);
+    TweenLite.to(elements.trackInfo, 5, {
+        //Blur...
+        onComplete: callback
+    });
 };
 dom.reverseAnimation = function(callback) {
+    elements.clock.div.show();
+    elements.progress.show();
+    TweenLite.to(elements.trackInfo, 2, {
+        color: '#ffffff'
+    });
+    TweenLite.to(elements.bar, 2, {
+        height: 100,
+        onComplete: function() {
+                        elements.bar.css('z-index', 0);
+                    }
+    });
     TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
         opacity: 1,
         onComplete: function() {
@@ -403,9 +424,10 @@ var playlist = function(dom, audio, timing) {
     };
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
+        var genre = track.genre.split('.')[0] - 1;
         dom.setTrackInfo(track.ytTitle, track.name);
-        dom.changeTheme(track.genre.split('.')[0] - 1);
-        dom.showNewTrack(function(){
+        dom.changeTheme(genre);
+        dom.showNewTrack(genre, function(){
             handle.reverseAnimation(data, track);
         });
     };
@@ -428,6 +450,9 @@ var playlist = function(dom, audio, timing) {
         ended = true;
         console.log('klaar');
     };
+
+
+
     this.progress = function(data, callback) {
         if(ended) return false;
         var dur = data[trackNumber].duration,
@@ -435,9 +460,6 @@ var playlist = function(dom, audio, timing) {
             percentage = (cur / dur) * 100;
         if (callback) callback(percentage);
     };
-
-
-
     this.setNavigation = function(data) {
         dom.admin.previous.click(function(){
             handle.playPrevious(data);

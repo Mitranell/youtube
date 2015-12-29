@@ -92,10 +92,31 @@ dom.startAnimation = function(callback) {
         onComplete: callback
     });
 };
-dom.showNewTrack = function(callback){
-    if(callback) callback();
+dom.showNewTrack = function(genre, callback){
+    elements.clock.div.hide();
+    elements.progress.hide();
+    elements.bar.css({
+        zIndex: 100,
+        height: '100%'
+    });
+    elements.trackInfo.css('color', dom.themes[genre]);
+    TweenLite.to(elements.trackInfo, 5, {
+        //Blur...
+        onComplete: callback
+    });
 };
 dom.reverseAnimation = function(callback) {
+    elements.clock.div.show();
+    elements.progress.show();
+    TweenLite.to(elements.trackInfo, 2, {
+        color: '#ffffff'
+    });
+    TweenLite.to(elements.bar, 2, {
+        height: 100,
+        onComplete: function() {
+                        elements.bar.css('z-index', 0);
+                    }
+    });
     TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
         opacity: 1,
         onComplete: function() {

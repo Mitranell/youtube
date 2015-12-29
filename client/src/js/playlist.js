@@ -13,9 +13,10 @@ var playlist = function(dom, audio, timing) {
     };
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
+        var genre = track.genre.split('.')[0] - 1;
         dom.setTrackInfo(track.ytTitle, track.name);
-        dom.changeTheme(track.genre.split('.')[0] - 1);
-        dom.showNewTrack(function(){
+        dom.changeTheme(genre);
+        dom.showNewTrack(genre, function(){
             handle.reverseAnimation(data, track);
         });
     };
@@ -38,6 +39,9 @@ var playlist = function(dom, audio, timing) {
         ended = true;
         console.log('klaar');
     };
+
+
+
     this.progress = function(data, callback) {
         if(ended) return false;
         var dur = data[trackNumber].duration,
@@ -45,9 +49,6 @@ var playlist = function(dom, audio, timing) {
             percentage = (cur / dur) * 100;
         if (callback) callback(percentage);
     };
-
-
-
     this.setNavigation = function(data) {
         dom.admin.previous.click(function(){
             handle.playPrevious(data);
