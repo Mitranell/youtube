@@ -9,29 +9,30 @@ var timing = require('./timing.js'),
     Playlist = require('./playlist.js'),
     playlist = new Playlist(dom, audio, timing);
 
-
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
     playlist.setNavigation(data);
-    playlist.play(data);
+    playlist.startAnimation(data);
     cycle.loop(data);
 };
 cycle.loop = function(data) {
     requestAnimationFrame(function() {
         cycle.loop(data);
     });
-    ui.render(audio.getSpectrum(), dom);
-    snow.render(dom);
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
-    timing.finalCountdown(function() {
-        dom.setFinalCountdown();
-    });
-    playlist.progress(data, function(percentage){
-        dom.setProgressBar(percentage);
-    });
+    if (!audio.paused) {
+        ui.render(audio.getSpectrum(), dom);
+        snow.render(dom);
+        timing.finalCountdown(function() {
+            dom.setFinalCountdown();
+        });
+        playlist.progress(data, function(percentage){
+            dom.setProgressBar(percentage);
+        });
+    }
 };
 
 

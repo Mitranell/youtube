@@ -9,11 +9,10 @@ var setSrc = function(url) {
 
 //Public audio object
 var audio = {};
+audio.paused = false;
 audio.play = function(src, ended) {
-    dancer.pause();
     setSrc('../client/tracks/' + src);
-    dancer.play();
-    console.log(dancer);
+    audio.unpause();
 
     dancer.source.onended = function() {
         if(ended) ended();
@@ -24,9 +23,11 @@ audio.getCurrentTime = function(){
 };
 audio.pause = function() {
     dancer.pause();
+    audio.paused = true;
 };
 audio.unpause = function() {
     dancer.play();
+    audio.paused = false;
 };
 audio.setVolume = function(vol) {
     dancer.setVolume(vol); //Volume from 0 to 1
@@ -54,29 +55,30 @@ var timing = require('./timing.js'),
     Playlist = require('./playlist.js'),
     playlist = new Playlist(dom, audio, timing);
 
-
 //Complete logic of the cycle of the app goes here
 var cycle = {};
 cycle.start = function(data) {
     playlist.setNavigation(data);
-    playlist.play(data);
+    playlist.startAnimation(data);
     cycle.loop(data);
 };
 cycle.loop = function(data) {
     requestAnimationFrame(function() {
         cycle.loop(data);
     });
-    ui.render(audio.getSpectrum(), dom);
-    snow.render(dom);
     timing.clock(function(obj) {
         dom.setClock(obj);
     });
-    timing.finalCountdown(function() {
-        dom.setFinalCountdown();
-    });
-    playlist.progress(data, function(percentage){
-        dom.setProgressBar(percentage);
-    });
+    if (!audio.paused) {
+        ui.render(audio.getSpectrum(), dom);
+        snow.render(dom);
+        timing.finalCountdown(function() {
+            dom.setFinalCountdown();
+        });
+        playlist.progress(data, function(percentage){
+            dom.setProgressBar(percentage);
+        });
+    }
 };
 
 
@@ -173,7 +175,8 @@ dom.setFinalCountdown = function(){ //Needs a lot of adjustment
     });
     TweenLite.to(elements.clock.div, 1, {
         width: '100%',
-        right: 0
+        right: 0,
+        fontSize: '20rem'
     });
     TweenLite.to(elements.progress, 0.5, {
         opacity: 0
@@ -195,10 +198,10 @@ dom.getPerspective = function() {
 dom.startAnimation = function(callback) {
     elements.leftEye.css('opacity', 0);
     elements.rightEye.css('opacity', 0);
-    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 5, {
+    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
         opacity: 0
     });
-    TweenLite.to(elements.theater, 5, {
+    TweenLite.to(elements.theater, 2, {
         width: dom.canvasWrapperWidth()*2,
         height: dom.canvasWrapperWidth()*2,
         marginTop: dom.canvasWrapperWidth() / -1,
@@ -206,6 +209,27 @@ dom.startAnimation = function(callback) {
         onComplete: callback
     });
 };
+dom.showNewTrack = function(callback){
+    if(callback) callback();
+};
+dom.reverseAnimation = function(callback) {
+    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
+        opacity: 1,
+        onComplete: function() {
+                        elements.leftEye.css('opacity', 1);
+                        elements.rightEye.css('opacity', 1);
+                    }
+    });
+    TweenLite.to(elements.theater, 2, {
+        width: 500,
+        height: 500,
+        marginTop: -250,
+        marginLeft: -250,
+        onComplete: callback
+    });
+};
+
+
 
 dom.themes = [
     'red',
@@ -371,19 +395,36 @@ var playlist = function(dom, audio, timing) {
     var ended = false;
 
     var handle = this;
-    this.play = function(data) {
+    this.startAnimation = function(data) {
+        audio.pause();
+        dom.startAnimation(function() {
+            handle.showNewTrack(data);
+        });
+    };
+    this.showNewTrack = function(data) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        dom.startAnimation(function(){
-            audio.play(track.src, function() {
-                trackNumber++;
-                if (trackNumber < data.length) handle.play(data);
-                else handle.end();
-            });
+        dom.showNewTrack(function(){
+            handle.reverseAnimation(data, track);
         });
     };
-    this.end = function(){
+    this.reverseAnimation = function(data, track) {
+        dom.reverseAnimation(function() {
+            handle.playNextSong(data, track);
+        });
+    };
+    this.playNextSong = function(data, track) {
+        audio.play(track.src, function() {
+            handle.songEnded(data, track);
+        });
+    };
+    this.songEnded = function(data, track) {
+        trackNumber++;
+        if (trackNumber < data.length) handle.startAnimation(data);
+        else handle.lastSong();
+    };
+    this.lastSong = function(){
         ended = true;
         console.log('klaar');
     };
@@ -394,6 +435,9 @@ var playlist = function(dom, audio, timing) {
             percentage = (cur / dur) * 100;
         if (callback) callback(percentage);
     };
+
+
+
     this.setNavigation = function(data) {
         dom.admin.previous.click(function(){
             handle.playPrevious(data);
@@ -408,7 +452,7 @@ var playlist = function(dom, audio, timing) {
     this.playPrevious = function (data) {
         if(trackNumber > 0) {
             trackNumber--;
-            handle.play(data);
+            handle.startAnimation(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
@@ -427,7 +471,7 @@ var playlist = function(dom, audio, timing) {
     this.playNext = function (data) {
         if (data.length > trackNumber + 1) {
             trackNumber++;
-            handle.play(data);
+            handle.startAnimation(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }

@@ -8,11 +8,10 @@ var setSrc = function(url) {
 
 //Public audio object
 var audio = {};
+audio.paused = false;
 audio.play = function(src, ended) {
-    dancer.pause();
     setSrc('../client/tracks/' + src);
-    dancer.play();
-    console.log(dancer);
+    audio.unpause();
 
     dancer.source.onended = function() {
         if(ended) ended();
@@ -23,9 +22,11 @@ audio.getCurrentTime = function(){
 };
 audio.pause = function() {
     dancer.pause();
+    audio.paused = true;
 };
 audio.unpause = function() {
     dancer.play();
+    audio.paused = false;
 };
 audio.setVolume = function(vol) {
     dancer.setVolume(vol); //Volume from 0 to 1

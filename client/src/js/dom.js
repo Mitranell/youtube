@@ -58,7 +58,8 @@ dom.setFinalCountdown = function(){ //Needs a lot of adjustment
     });
     TweenLite.to(elements.clock.div, 1, {
         width: '100%',
-        right: 0
+        right: 0,
+        fontSize: '20rem'
     });
     TweenLite.to(elements.progress, 0.5, {
         opacity: 0
@@ -80,10 +81,10 @@ dom.getPerspective = function() {
 dom.startAnimation = function(callback) {
     elements.leftEye.css('opacity', 0);
     elements.rightEye.css('opacity', 0);
-    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 5, {
+    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
         opacity: 0
     });
-    TweenLite.to(elements.theater, 5, {
+    TweenLite.to(elements.theater, 2, {
         width: dom.canvasWrapperWidth()*2,
         height: dom.canvasWrapperWidth()*2,
         marginTop: dom.canvasWrapperWidth() / -1,
@@ -91,6 +92,27 @@ dom.startAnimation = function(callback) {
         onComplete: callback
     });
 };
+dom.showNewTrack = function(callback){
+    if(callback) callback();
+};
+dom.reverseAnimation = function(callback) {
+    TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
+        opacity: 1,
+        onComplete: function() {
+                        elements.leftEye.css('opacity', 1);
+                        elements.rightEye.css('opacity', 1);
+                    }
+    });
+    TweenLite.to(elements.theater, 2, {
+        width: 500,
+        height: 500,
+        marginTop: -250,
+        marginLeft: -250,
+        onComplete: callback
+    });
+};
+
+
 
 dom.themes = [
     'red',

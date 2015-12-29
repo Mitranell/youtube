@@ -5,19 +5,36 @@ var playlist = function(dom, audio, timing) {
     var ended = false;
 
     var handle = this;
-    this.play = function(data) {
+    this.startAnimation = function(data) {
+        audio.pause();
+        dom.startAnimation(function() {
+            handle.showNewTrack(data);
+        });
+    };
+    this.showNewTrack = function(data) {
         var track = data[trackNumber];
         dom.setTrackInfo(track.ytTitle, track.name);
         dom.changeTheme(track.genre.split('.')[0] - 1);
-        dom.startAnimation(function(){
-            audio.play(track.src, function() {
-                trackNumber++;
-                if (trackNumber < data.length) handle.play(data);
-                else handle.end();
-            });
+        dom.showNewTrack(function(){
+            handle.reverseAnimation(data, track);
         });
     };
-    this.end = function(){
+    this.reverseAnimation = function(data, track) {
+        dom.reverseAnimation(function() {
+            handle.playNextSong(data, track);
+        });
+    };
+    this.playNextSong = function(data, track) {
+        audio.play(track.src, function() {
+            handle.songEnded(data, track);
+        });
+    };
+    this.songEnded = function(data, track) {
+        trackNumber++;
+        if (trackNumber < data.length) handle.startAnimation(data);
+        else handle.lastSong();
+    };
+    this.lastSong = function(){
         ended = true;
         console.log('klaar');
     };
@@ -28,6 +45,9 @@ var playlist = function(dom, audio, timing) {
             percentage = (cur / dur) * 100;
         if (callback) callback(percentage);
     };
+
+
+
     this.setNavigation = function(data) {
         dom.admin.previous.click(function(){
             handle.playPrevious(data);
@@ -42,7 +62,7 @@ var playlist = function(dom, audio, timing) {
     this.playPrevious = function (data) {
         if(trackNumber > 0) {
             trackNumber--;
-            handle.play(data);
+            handle.startAnimation(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
@@ -61,7 +81,7 @@ var playlist = function(dom, audio, timing) {
     this.playNext = function (data) {
         if (data.length > trackNumber + 1) {
             trackNumber++;
-            handle.play(data);
+            handle.startAnimation(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
