@@ -8,8 +8,22 @@ var playlist = function(dom, audio, timing) {
     this.startAnimation = function(data) {
         audio.pause();
         dom.startAnimation(function() {
-            handle.showNewTrack(data);
+            handle.synchronize(data);
         });
+    };
+    this.synchronize = function(data) {
+        var totalDuration = 0;
+        for (var i = trackNumber; i < data.length; i++) {
+            totalDuration += data[i].duration;
+        }
+        totalDuration = totalDuration + 5000*(i - trackNumber); //5 seconds between songs
+
+        if (timing.getRemainingMs() > totalDuration)
+            setTimeout(function() {
+                handle.synchronize(data);
+            }, 1000);
+        else
+            handle.showNewTrack(data);
     };
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
