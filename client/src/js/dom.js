@@ -51,10 +51,14 @@ dom.setFinalCountdown = function(){ //Needs a lot of adjustment
         top: '-200%'
     });
     TweenLite.to(elements.trackInfo, 1, {
-        left: '-100%'
+        opacity: 0
+    });
+    TweenLite.to(elements.bar, 1, {
+        height: '100%'
     });
     TweenLite.to(elements.clock.div, 1, {
-        right: '50%',
+        width: '100%',
+        right: 0
     });
 };
 dom.getRange = function() {

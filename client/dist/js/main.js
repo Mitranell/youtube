@@ -166,10 +166,14 @@ dom.setFinalCountdown = function(){ //Needs a lot of adjustment
         top: '-200%'
     });
     TweenLite.to(elements.trackInfo, 1, {
-        left: '-100%'
+        opacity: 0
+    });
+    TweenLite.to(elements.bar, 1, {
+        height: '100%'
     });
     TweenLite.to(elements.clock.div, 1, {
-        right: '50%',
+        width: '100%',
+        right: 0
     });
 };
 dom.getRange = function() {
@@ -251,6 +255,9 @@ elements.canvas = $('#canvas');
 elements.theater = $('#theater');
 elements.skull = $('#skull');
 elements.logo = $('#logo');
+
+elements.bar = $('#bar');
+
 elements.clock = {};
 elements.clock.div = $('#clock');
 elements.clock.hours = $('#hours');
@@ -348,13 +355,8 @@ var playlist = function(dom, audio, timing) {
         dom.changeTheme(track.genre.split('.')[0] - 1);
         audio.play(track.src, function() {
             trackNumber++;
-<<<<<<< HEAD
             if (trackNumber > data.length - 1) handle.end();
             else handle.play(data);
-=======
-            if (trackNumber < data.length) handle.play(data);
-            else console.log('klaar');
->>>>>>> origin/master
         });
     };
     this.end = function(){
@@ -364,13 +366,8 @@ var playlist = function(dom, audio, timing) {
     this.progress = function(data, callback) {
         if(ended) return false;
         var dur = data[trackNumber].duration,
-<<<<<<< HEAD
-            curTime = audio.getCurrentTime();
-        var percentage = (curTime / dur) *100;
-=======
             cur = audio.getTime() * 1000, //Seconds to miliseconds
             percentage = (cur / dur) * 100;
->>>>>>> origin/master
         if (callback) callback(percentage);
     };
     this.setNavigation = function(data) {

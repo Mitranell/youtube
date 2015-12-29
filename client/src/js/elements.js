@@ -6,6 +6,9 @@ elements.canvas = $('#canvas');
 elements.theater = $('#theater');
 elements.skull = $('#skull');
 elements.logo = $('#logo');
+
+elements.bar = $('#bar');
+
 elements.clock = {};
 elements.clock.div = $('#clock');
 elements.clock.hours = $('#hours');
