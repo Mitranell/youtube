@@ -12,10 +12,14 @@ audio.play = function(src, ended) {
     dancer.pause();
     setSrc('../client/tracks/' + src);
     dancer.play();
+    console.log(dancer);
 
     dancer.source.onended = function() {
         if(ended) ended();
     };
+};
+audio.getCurrentTime = function(){
+    if(dancer.source) return dancer.source.currentTime *1000; //To ms
 };
 audio.pause = function() {
     dancer.pause();

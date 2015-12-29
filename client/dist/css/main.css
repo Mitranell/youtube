@@ -385,7 +385,7 @@ main #bar .item#clock {
   font-size: 5rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.5);
-  text-align: right;
+  text-align: center;
 }
 /* line 23, ../../src/scss/_bar.scss */
 main #bar .item#clock span {

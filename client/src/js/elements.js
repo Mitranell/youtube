@@ -10,6 +10,9 @@ elements.teeth = $('#teeth');
 elements.leftEye = $('#leftEye');
 elements.rightEye = $('#rightEye');
 elements.logo = $('#logo');
+
+elements.bar = $('#bar');
+
 elements.clock = {};
 elements.clock.div = $('#clock');
 elements.clock.hours = $('#hours');
