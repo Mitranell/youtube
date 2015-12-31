@@ -153,7 +153,7 @@ dom.setClock = function(obj){
 };
 dom.setTrackInfo = function(number, title, name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(number + '. ' + decoded + ' - ' + name);
+    elements.trackInfo.find('.table-cell').html(number + '. ' + decoded + ' - ' + name);
 };
 dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
@@ -210,7 +210,21 @@ dom.showNewTrack = function(genre, callback){
         zIndex: 100,
         height: '100%'
     });
-    elements.trackInfo.css('color', dom.themes[genre]);
+
+    elements.trackInfo.addClass('blurred');
+    TweenLite.to(elements.trackInfo, 1, {
+        width: '100%',
+        left: 0,
+        color: 'black',
+        //fontSize: '20rem'
+        onComplete: function(){
+            elements.trackInfo.removeClass('blurred');
+            TweenLite.to(elements.trackInfo, 0.5, {
+                opacity: 0,
+                delay: 2
+            });
+        }
+    });
     TweenLite.to(elements.trackInfo, 5, {
         //Blur...
         onComplete: callback
@@ -220,12 +234,18 @@ dom.reverseAnimation = function(callback) {
     elements.clock.div.show();
     elements.progress.show();
     TweenLite.to(elements.trackInfo, 2, {
-        color: '#ffffff'
+        color: '#ffffff',
+        width: 'auto',
+        left: 25
     });
     TweenLite.to(elements.bar, 2, {
         height: 100,
         onComplete: function() {
                         elements.bar.css('z-index', 0);
+
+                        TweenLite.set(elements.trackInfo, 2, {
+                            opacity: 1
+                        });
                     }
     });
     TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {

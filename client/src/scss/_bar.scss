@@ -10,16 +10,20 @@
         position: absolute;
         height: 100%;
         top: 0;
+        text-align: center;
         &#trackInfo {
+            @include transition(all, 2s, ease);
             left: 25px;
             font-size: 2rem;
+            &.blurred{
+                -webkit-filter: blur(10px);
+            }
         }
         &#clock {
             right: 25px;
             font-size: 5rem;
             font-weight: 400;
             color: rgba($color-white, 0.5);
-            text-align: center;
             span {
                 font-weight: 700;
                 color: rgba($color-white, 1);

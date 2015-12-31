@@ -373,45 +373,54 @@ main #bar .item {
   position: absolute;
   height: 100%;
   top: 0;
+  text-align: center;
 }
-/* line 13, ../../src/scss/_bar.scss */
+/* line 14, ../../src/scss/_bar.scss */
 main #bar .item#trackInfo {
+  -webkit-transition: all 2s ease;
+  -moz-transition: all 2s ease;
+  -ms-transition: all 2s ease;
+  -o-transition: all 2s ease;
+  transition: all 2s ease;
   left: 25px;
   font-size: 2rem;
 }
-/* line 17, ../../src/scss/_bar.scss */
+/* line 18, ../../src/scss/_bar.scss */
+main #bar .item#trackInfo.blurred {
+  -webkit-filter: blur(10px);
+}
+/* line 22, ../../src/scss/_bar.scss */
 main #bar .item#clock {
   right: 25px;
   font-size: 5rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.5);
-  text-align: center;
 }
-/* line 23, ../../src/scss/_bar.scss */
+/* line 27, ../../src/scss/_bar.scss */
 main #bar .item#clock span {
   font-weight: 700;
   color: white;
 }
-/* line 29, ../../src/scss/_bar.scss */
+/* line 33, ../../src/scss/_bar.scss */
 main #bar #progress {
   position: absolute;
   height: 4px;
   left: 0;
   bottom: 0;
 }
-/* line 34, ../../src/scss/_bar.scss */
+/* line 38, ../../src/scss/_bar.scss */
 main #bar #progress.red {
   background-color: red;
 }
-/* line 37, ../../src/scss/_bar.scss */
+/* line 41, ../../src/scss/_bar.scss */
 main #bar #progress.blue {
   background-color: blue;
 }
-/* line 40, ../../src/scss/_bar.scss */
+/* line 44, ../../src/scss/_bar.scss */
 main #bar #progress.black {
   background-color: black;
 }
-/* line 43, ../../src/scss/_bar.scss */
+/* line 47, ../../src/scss/_bar.scss */
 main #bar #progress.yellow {
   background-color: yellow;
 }
