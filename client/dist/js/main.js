@@ -240,7 +240,11 @@ dom.reverseAnimation = function(callback) {
         onComplete: callback
     });
 };
-
+dom.hideTimer = function(){
+    TweenLite.to(elements.clock.div, 0.5, {
+        opacity: 0
+    });
+};
 
 
 dom.themes = [
@@ -429,7 +433,7 @@ var playlist = function(dom, audio, timing) {
     };
     this.synchronize = function(data, track) {
         var totalDuration = 0;
-        for (var i = trackNumber; i < data.length; i++) {
+        for (var i = trackNumber; i < data.length-1; i++) {
             totalDuration += data[i].duration;
         }
         totalDuration = totalDuration + 5000*(i - trackNumber - 2); //5 seconds between songs
@@ -454,6 +458,7 @@ var playlist = function(dom, audio, timing) {
     this.lastSong = function(data){
         if (ended) {
             console.log('klaaar!!');
+            dom.hideTimer();
         } else {
             ended = true;
             dom.setFinalCountdown();
@@ -590,7 +595,7 @@ module.exports = snow;
 },{}],7:[function(require,module,exports){
 // Public timing object
 var timing = {};
-timing.deadline = '2015-12-31 13:55'; //00:00 is important for timezone
+timing.deadline = '2015-12-31 14:17'; //00:00 is important for timezone
 timing.getRemaining = function(){
     function toDD(val) {
         if (val < 10) return '0' + val;

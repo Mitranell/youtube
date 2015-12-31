@@ -126,7 +126,11 @@ dom.reverseAnimation = function(callback) {
         onComplete: callback
     });
 };
-
+dom.hideTimer = function(){
+    TweenLite.to(elements.clock.div, 0.5, {
+        opacity: 0
+    });
+};
 
 
 dom.themes = [

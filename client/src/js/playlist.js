@@ -27,7 +27,7 @@ var playlist = function(dom, audio, timing) {
     };
     this.synchronize = function(data, track) {
         var totalDuration = 0;
-        for (var i = trackNumber; i < data.length; i++) {
+        for (var i = trackNumber; i < data.length-1; i++) {
             totalDuration += data[i].duration;
         }
         totalDuration = totalDuration + 5000*(i - trackNumber - 2); //5 seconds between songs
@@ -52,6 +52,7 @@ var playlist = function(dom, audio, timing) {
     this.lastSong = function(data){
         if (ended) {
             console.log('klaaar!!');
+            dom.hideTimer();
         } else {
             ended = true;
             dom.setFinalCountdown();

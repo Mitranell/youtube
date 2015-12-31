@@ -1,6 +1,6 @@
 // Public timing object
 var timing = {};
-timing.deadline = '2015-12-31 13:55'; //00:00 is important for timezone
+timing.deadline = '2015-12-31 14:17'; //00:00 is important for timezone
 timing.getRemaining = function(){
     function toDD(val) {
         if (val < 10) return '0' + val;
