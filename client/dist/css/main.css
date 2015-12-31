@@ -46,12 +46,15 @@ textarea {
 
 /* line 4, ../../src/scss/main.scss */
 body {
+  position: relative;
   background-color: #000;
-  overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   color: #fff;
 }
 
-/* line 11, ../../src/scss/main.scss */
+/* line 14, ../../src/scss/main.scss */
 body,
 input,
 textarea {
@@ -60,7 +63,7 @@ textarea {
   font-weight: 700;
 }
 
-/* line 18, ../../src/scss/main.scss */
+/* line 21, ../../src/scss/main.scss */
 main {
   position: relative;
   width: 100%;
@@ -512,4 +515,14 @@ main #admin .item .slider {
 main #admin input {
   background: white;
   width: 50px;
+}
+
+/* line 1, ../../src/scss/_video.scss */
+#video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 999;
 }

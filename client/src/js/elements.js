@@ -1,5 +1,8 @@
 //Dom element hooks
 var elements = {};
+
+elements.main = $('main');
+
 elements.shirt = $('#shirt');
 elements.canvasWrapper = $('#canvasWrapper');
 elements.canvas = $('#canvas');
@@ -12,6 +15,9 @@ elements.rightEye = $('#rightEye');
 elements.logo = $('#logo');
 
 elements.bar = $('#bar');
+elements.video = $('#video');
+elements.videoElem = document.getElementById("fireworks");
+
 
 elements.clock = {};
 elements.clock.div = $('#clock');

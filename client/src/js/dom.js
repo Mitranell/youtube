@@ -92,7 +92,7 @@ dom.startAnimation = function(callback) {
 dom.showNewTrack = function(genre, callback){
     elements.clock.div.hide();
     elements.progress.hide();
-    elements.bar.css({
+    TweenLite.set(elements.bar, {
         zIndex: 100,
         height: '100%'
     });
@@ -127,9 +127,11 @@ dom.reverseAnimation = function(callback) {
     TweenLite.to(elements.bar, 2, {
         height: 100,
         onComplete: function() {
-                        elements.bar.css('z-index', 0);
-
-                        TweenLite.set(elements.trackInfo, 2, {
+                        // elements.bar.css('z-index', 0);
+                        TweenLite.set(elements.bar, {
+                            zIndex: 0
+                        });
+                        TweenLite.to(elements.trackInfo, 2, {
                             opacity: 1
                         });
                     }
@@ -137,8 +139,15 @@ dom.reverseAnimation = function(callback) {
     TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
         opacity: 1,
         onComplete: function() {
-                        elements.leftEye.css('opacity', 1);
-                        elements.rightEye.css('opacity', 1);
+                        // elements.leftEye.css('opacity', 1);
+                        // elements.rightEye.css('opacity', 1);
+
+                        TweenLite.set(elements.leftEye, {
+                            opacity: 1
+                        });
+                        TweenLite.set(elements.rightEye, {
+                            opacity: 1
+                        });
                     }
     });
     TweenLite.to(elements.theater, 2, {
@@ -173,6 +182,13 @@ dom.changeTheme = function(i){
     setTheme(elements.progress);
 };
 
+dom.startVideo = function(){
+    TweenLite.to(elements.main, 0.5, {
+        opacity: 0
+    });
+    elements.videoElem.play();
+};
+
 dom.admin = {};
 dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
@@ -197,6 +213,9 @@ $(document).keydown(function(e) {
             break;
         case 52: // 4
             dom.changeTheme(3);
+            break;
+        case 53: // 4
+            dom.startVideo();
             break;
         case 70: // f
             dom.setFinalCountdown();
