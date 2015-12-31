@@ -21,7 +21,8 @@ cycle.loop = function(data) {
         cycle.loop(data);
     });
     timing.clock(function(obj) {
-        dom.setClock(obj);
+        if (obj.t > 10000) dom.setClock(obj);
+        else dom.hideTimer();
     });
     if (!audio.paused) {
         ui.render(audio.getSpectrum(), dom);

@@ -67,7 +67,8 @@ cycle.loop = function(data) {
         cycle.loop(data);
     });
     timing.clock(function(obj) {
-        dom.setClock(obj);
+        if (obj.t > 10000) dom.setClock(obj);
+        else dom.hideTimer();
     });
     if (!audio.paused) {
         ui.render(audio.getSpectrum(), dom);
@@ -149,7 +150,7 @@ dom.kick = function(factor, rotation, speed, perspective) {
 dom.setClock = function(obj){
     elements.clock.hours.html(obj.h);
     elements.clock.minutes.html(obj.m);
-    elements.clock.seconds.html(obj.s);
+    elements.clock.seconds.html(obj.s - 1);
 };
 dom.setTrackInfo = function(number, title, name){
     var decoded = atob(title); //Decode the base64 title string
@@ -412,7 +413,6 @@ var playlist = function(dom, audio, timing) {
 
     var handle = this;
     this.startAnimation = function(data) {
-        audio.pause();
         dom.startAnimation(function() {
             handle.showNewTrack(data);
         });
@@ -420,7 +420,7 @@ var playlist = function(dom, audio, timing) {
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
         var genre = track.genre.split('.')[0] - 1;
-        dom.setTrackInfo(data.length - trackNumber - 1, track.ytTitle, track.name);
+        dom.setTrackInfo(data.length - trackNumber - 2, track.ytTitle, track.name);
         dom.changeTheme(genre);
         dom.showNewTrack(genre, function(){
             handle.reverseAnimation(data, track);
@@ -436,7 +436,7 @@ var playlist = function(dom, audio, timing) {
         for (var i = trackNumber; i < data.length-1; i++) {
             totalDuration += data[i].duration;
         }
-        totalDuration = totalDuration + 5000*(i - trackNumber - 2); //5 seconds between songs
+        totalDuration = totalDuration + 12000*(i - trackNumber - 2); //5 seconds between songs
 
         if (timing.getRemainingMs() > totalDuration)
             setTimeout(function() {
@@ -447,22 +447,23 @@ var playlist = function(dom, audio, timing) {
     };
     this.playNextSong = function(data, track) {
         audio.play(track.src, function() {
-            handle.songEnded(data, track);
+            handle.songEnded(data);
         });
     };
-    this.songEnded = function(data, track) {
+    this.songEnded = function(data) {
+        audio.pause();
         trackNumber++;
-        if (trackNumber + 1 < data.length) handle.startAnimation(data);
+        if (trackNumber + 2 < data.length) handle.startAnimation(data);
         else handle.lastSong(data);
     };
     this.lastSong = function(data){
         if (ended) {
-            console.log('klaaar!!');
+            handle.playNextSong(data, data[data.length - 1]);
             dom.hideTimer();
         } else {
             ended = true;
             dom.setFinalCountdown();
-            handle.playNextSong(data, data[data.length - 1]);
+            handle.playNextSong(data, data[data.length - 2]);
         }
     };
 
@@ -488,8 +489,8 @@ var playlist = function(dom, audio, timing) {
     };
     this.playPrevious = function (data) {
         if(trackNumber > 0) {
-            trackNumber--;
-            handle.startAnimation(data);
+            trackNumber -= 2;
+            handle.songEnded(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
@@ -507,8 +508,7 @@ var playlist = function(dom, audio, timing) {
     };
     this.playNext = function (data) {
         if (data.length > trackNumber + 1) {
-            trackNumber++;
-            handle.startAnimation(data);
+            handle.songEnded(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
@@ -595,7 +595,7 @@ module.exports = snow;
 },{}],7:[function(require,module,exports){
 // Public timing object
 var timing = {};
-timing.deadline = '2015-12-31 14:17'; //00:00 is important for timezone
+timing.deadline = '2015-12-31 15:23:55'; //00:00 is important for timezone
 timing.getRemaining = function(){
     function toDD(val) {
         if (val < 10) return '0' + val;
@@ -621,6 +621,7 @@ timing.clock = function(callback) {
     var curSecond = rem.seconds;
     if(curSecond !== lastSecond){
         var obj = {};
+        obj.t = rem.total;
         obj.h = rem.hours;
         obj.m = rem.minutes;
         obj.s = rem.seconds;

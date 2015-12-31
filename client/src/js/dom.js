@@ -35,7 +35,7 @@ dom.kick = function(factor, rotation, speed, perspective) {
 dom.setClock = function(obj){
     elements.clock.hours.html(obj.h);
     elements.clock.minutes.html(obj.m);
-    elements.clock.seconds.html(obj.s);
+    elements.clock.seconds.html(obj.s - 1);
 };
 dom.setTrackInfo = function(number, title, name){
     var decoded = atob(title); //Decode the base64 title string

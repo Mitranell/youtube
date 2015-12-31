@@ -6,7 +6,6 @@ var playlist = function(dom, audio, timing) {
 
     var handle = this;
     this.startAnimation = function(data) {
-        audio.pause();
         dom.startAnimation(function() {
             handle.showNewTrack(data);
         });
@@ -14,7 +13,7 @@ var playlist = function(dom, audio, timing) {
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
         var genre = track.genre.split('.')[0] - 1;
-        dom.setTrackInfo(data.length - trackNumber - 1, track.ytTitle, track.name);
+        dom.setTrackInfo(data.length - trackNumber - 2, track.ytTitle, track.name);
         dom.changeTheme(genre);
         dom.showNewTrack(genre, function(){
             handle.reverseAnimation(data, track);
@@ -30,7 +29,7 @@ var playlist = function(dom, audio, timing) {
         for (var i = trackNumber; i < data.length-1; i++) {
             totalDuration += data[i].duration;
         }
-        totalDuration = totalDuration + 5000*(i - trackNumber - 2); //5 seconds between songs
+        totalDuration = totalDuration + 12000*(i - trackNumber - 2); //5 seconds between songs
 
         if (timing.getRemainingMs() > totalDuration)
             setTimeout(function() {
@@ -41,22 +40,23 @@ var playlist = function(dom, audio, timing) {
     };
     this.playNextSong = function(data, track) {
         audio.play(track.src, function() {
-            handle.songEnded(data, track);
+            handle.songEnded(data);
         });
     };
-    this.songEnded = function(data, track) {
+    this.songEnded = function(data) {
+        audio.pause();
         trackNumber++;
-        if (trackNumber + 1 < data.length) handle.startAnimation(data);
+        if (trackNumber + 2 < data.length) handle.startAnimation(data);
         else handle.lastSong(data);
     };
     this.lastSong = function(data){
         if (ended) {
-            console.log('klaaar!!');
+            handle.playNextSong(data, data[data.length - 1]);
             dom.hideTimer();
         } else {
             ended = true;
             dom.setFinalCountdown();
-            handle.playNextSong(data, data[data.length - 1]);
+            handle.playNextSong(data, data[data.length - 2]);
         }
     };
 
@@ -82,8 +82,8 @@ var playlist = function(dom, audio, timing) {
     };
     this.playPrevious = function (data) {
         if(trackNumber > 0) {
-            trackNumber--;
-            handle.startAnimation(data);
+            trackNumber -= 2;
+            handle.songEnded(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
@@ -101,8 +101,7 @@ var playlist = function(dom, audio, timing) {
     };
     this.playNext = function (data) {
         if (data.length > trackNumber + 1) {
-            trackNumber++;
-            handle.startAnimation(data);
+            handle.songEnded(data);
             dom.admin.play.removeClass("fa-play");
             dom.admin.play.addClass("fa-pause");
         }
