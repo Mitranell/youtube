@@ -39,7 +39,7 @@ dom.setClock = function(obj){
 };
 dom.setTrackInfo = function(number, title, name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(number + '. ' + decoded + ' - ' + name);
+    elements.trackInfo.find('.table-cell').html(number + '. ' + decoded + ' - ' + name);
 };
 dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
@@ -92,11 +92,25 @@ dom.startAnimation = function(callback) {
 dom.showNewTrack = function(genre, callback){
     elements.clock.div.hide();
     elements.progress.hide();
-    elements.bar.css({
+    TweenLite.set(elements.bar, {
         zIndex: 100,
         height: '100%'
     });
-    elements.trackInfo.css('color', dom.themes[genre]);
+
+    elements.trackInfo.addClass('blurred');
+    TweenLite.to(elements.trackInfo, 1, {
+        width: '100%',
+        left: 0,
+        color: 'black',
+        //fontSize: '20rem'
+        onComplete: function(){
+            elements.trackInfo.removeClass('blurred');
+            TweenLite.to(elements.trackInfo, 0.5, {
+                opacity: 0,
+                delay: 2
+            });
+        }
+    });
     TweenLite.to(elements.trackInfo, 5, {
         //Blur...
         onComplete: callback
@@ -106,19 +120,34 @@ dom.reverseAnimation = function(callback) {
     elements.clock.div.show();
     elements.progress.show();
     TweenLite.to(elements.trackInfo, 2, {
-        color: '#ffffff'
+        color: '#ffffff',
+        width: 'auto',
+        left: 25
     });
     TweenLite.to(elements.bar, 2, {
         height: 100,
         onComplete: function() {
-                        elements.bar.css('z-index', 0);
+                        // elements.bar.css('z-index', 0);
+                        TweenLite.set(elements.bar, {
+                            zIndex: 0
+                        });
+                        TweenLite.to(elements.trackInfo, 2, {
+                            opacity: 1
+                        });
                     }
     });
     TweenLite.to([elements.detailing, elements.teeth, elements.logo], 2, {
         opacity: 1,
         onComplete: function() {
-                        elements.leftEye.css('opacity', 1);
-                        elements.rightEye.css('opacity', 1);
+                        // elements.leftEye.css('opacity', 1);
+                        // elements.rightEye.css('opacity', 1);
+
+                        TweenLite.set(elements.leftEye, {
+                            opacity: 1
+                        });
+                        TweenLite.set(elements.rightEye, {
+                            opacity: 1
+                        });
                     }
     });
     TweenLite.to(elements.theater, 2, {
@@ -153,6 +182,13 @@ dom.changeTheme = function(i){
     setTheme(elements.progress);
 };
 
+dom.startVideo = function(){
+    TweenLite.to(elements.main, 0.5, {
+        opacity: 0
+    });
+    elements.videoElem.play();
+};
+
 dom.admin = {};
 dom.admin.open = function(){
     elements.admin.div.toggleClass('open');
@@ -177,6 +213,9 @@ $(document).keydown(function(e) {
             break;
         case 52: // 4
             dom.changeTheme(3);
+            break;
+        case 53: // 4
+            dom.startVideo();
             break;
         case 70: // f
             dom.setFinalCountdown();
