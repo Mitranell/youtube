@@ -85,10 +85,7 @@ dom.startAnimation = function(callback) {
         opacity: 0
     });
     TweenLite.to(elements.theater, 2, {
-        width: dom.canvasWrapperWidth()*2,
-        height: dom.canvasWrapperWidth()*2,
-        marginTop: dom.canvasWrapperWidth() / -1,
-        marginLeft: dom.canvasWrapperWidth() / -1,
+        scale: 8,
         onComplete: callback
     });
 };
@@ -125,10 +122,7 @@ dom.reverseAnimation = function(callback) {
                     }
     });
     TweenLite.to(elements.theater, 2, {
-        width: 500,
-        height: 500,
-        marginTop: -250,
-        marginLeft: -250,
+        scale: 1,
         onComplete: callback
     });
 };
