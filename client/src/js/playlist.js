@@ -14,7 +14,7 @@ var playlist = function(dom, audio, timing) {
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
         var genre = track.genre.split('.')[0] - 1;
-        dom.setTrackInfo(data.length - trackNumber, track.ytTitle, track.name);
+        dom.setTrackInfo(data.length - trackNumber - 1, track.ytTitle, track.name);
         dom.changeTheme(genre);
         dom.showNewTrack(genre, function(){
             handle.reverseAnimation(data, track);
