@@ -37,9 +37,9 @@ dom.setClock = function(obj){
     elements.clock.minutes.html(obj.m);
     elements.clock.seconds.html(obj.s);
 };
-dom.setTrackInfo = function(title,name){
+dom.setTrackInfo = function(number, title, name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(decoded + ' - ' + name);
+    elements.trackInfo.html(number + '. ' + decoded + ' - ' + name);
 };
 dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {

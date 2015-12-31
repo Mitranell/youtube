@@ -72,9 +72,6 @@ cycle.loop = function(data) {
     if (!audio.paused) {
         ui.render(audio.getSpectrum(), dom);
         snow.render(dom);
-        timing.finalCountdown(function() {
-            dom.setFinalCountdown();
-        });
         playlist.progress(data, function(percentage){
             dom.setProgressBar(percentage);
         });
@@ -154,9 +151,9 @@ dom.setClock = function(obj){
     elements.clock.minutes.html(obj.m);
     elements.clock.seconds.html(obj.s);
 };
-dom.setTrackInfo = function(title,name){
+dom.setTrackInfo = function(number, title, name){
     var decoded = atob(title); //Decode the base64 title string
-    elements.trackInfo.html(decoded + ' - ' + name);
+    elements.trackInfo.html(number + '. ' + decoded + ' - ' + name);
 };
 dom.setProgressBar = function(percentage){
     TweenLite.set(elements.progress, {
@@ -413,27 +410,13 @@ var playlist = function(dom, audio, timing) {
     this.startAnimation = function(data) {
         audio.pause();
         dom.startAnimation(function() {
-            handle.synchronize(data);
-        });
-    };
-    this.synchronize = function(data) {
-        var totalDuration = 0;
-        for (var i = trackNumber; i < data.length; i++) {
-            totalDuration += data[i].duration;
-        }
-        totalDuration = totalDuration + 5000*(i - trackNumber); //5 seconds between songs
-
-        if (timing.getRemainingMs() > totalDuration)
-            setTimeout(function() {
-                handle.synchronize(data);
-            }, 1000);
-        else
             handle.showNewTrack(data);
+        });
     };
     this.showNewTrack = function(data) {
         var track = data[trackNumber];
         var genre = track.genre.split('.')[0] - 1;
-        dom.setTrackInfo(track.ytTitle, track.name);
+        dom.setTrackInfo(data.length - trackNumber, track.ytTitle, track.name);
         dom.changeTheme(genre);
         dom.showNewTrack(genre, function(){
             handle.reverseAnimation(data, track);
@@ -441,8 +424,22 @@ var playlist = function(dom, audio, timing) {
     };
     this.reverseAnimation = function(data, track) {
         dom.reverseAnimation(function() {
-            handle.playNextSong(data, track);
+            handle.synchronize(data, track);
         });
+    };
+    this.synchronize = function(data, track) {
+        var totalDuration = 0;
+        for (var i = trackNumber; i < data.length; i++) {
+            totalDuration += data[i].duration;
+        }
+        totalDuration = totalDuration + 5000*(i - trackNumber - 2); //5 seconds between songs
+
+        if (timing.getRemainingMs() > totalDuration)
+            setTimeout(function() {
+                handle.synchronize(data, track);
+            }, 1000);
+        else
+            handle.playNextSong(data, track);
     };
     this.playNextSong = function(data, track) {
         audio.play(track.src, function() {
@@ -451,12 +448,17 @@ var playlist = function(dom, audio, timing) {
     };
     this.songEnded = function(data, track) {
         trackNumber++;
-        if (trackNumber < data.length) handle.startAnimation(data);
-        else handle.lastSong();
+        if (trackNumber + 1 < data.length) handle.startAnimation(data);
+        else handle.lastSong(data);
     };
-    this.lastSong = function(){
-        ended = true;
-        console.log('klaar');
+    this.lastSong = function(data){
+        if (ended) {
+            console.log('klaaar!!');
+        } else {
+            ended = true;
+            dom.setFinalCountdown();
+            handle.playNextSong(data, data[data.length - 1]);
+        }
     };
 
 
@@ -588,16 +590,14 @@ module.exports = snow;
 },{}],7:[function(require,module,exports){
 // Public timing object
 var timing = {};
-//timing.deadline = '2016-01-01 00:00'; //00:00 is important for timezone
-timing.deadline = Date.now() + 809000; //809000 is duration of 3 songs + 10 seconds
+timing.deadline = '2015-12-31 13:55'; //00:00 is important for timezone
 timing.getRemaining = function(){
     function toDD(val) {
         if (val < 10) return '0' + val;
         else return val;
     }
     var obj = {};
-    //obj.total   =  Date.parse(timing.deadline) - Date.now();
-    obj.total   =  timing.deadline - Date.now();
+    obj.total   =  Date.parse(timing.deadline) - Date.now();
     obj.day     =  toDD(Math.floor(obj.total / (1000 * 60 * 60 * 24)));
     obj.hours   =  toDD(Math.floor((obj.total / (1000 * 60 * 60)) % 24));
     obj.minutes =  toDD(Math.floor((obj.total / 1000 / 60) % 60));
@@ -620,11 +620,6 @@ timing.clock = function(callback) {
         obj.m = rem.minutes;
         obj.s = rem.seconds;
         if(callback) callback(obj);
-    }
-};
-timing.finalCountdown = function(callback) {
-    if (timing.getRemainingMs() < 15*60*1000) {
-        if(callback) callback();
     }
 };
 

@@ -26,9 +26,6 @@ cycle.loop = function(data) {
     if (!audio.paused) {
         ui.render(audio.getSpectrum(), dom);
         snow.render(dom);
-        timing.finalCountdown(function() {
-            dom.setFinalCountdown();
-        });
         playlist.progress(data, function(percentage){
             dom.setProgressBar(percentage);
         });
